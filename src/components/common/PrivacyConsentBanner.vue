@@ -14,54 +14,66 @@ function acknowledge() {
 </script>
 
 <template>
-  <div v-if="visible" class="consent-banner" role="note">
-    <div class="gab-container consent-banner__inner">
-      <p class="consent-banner__text">
-        Usamos seus dados apenas para autenticação e processamento de pagamento, conforme a LGPD.
-        <RouterLink to="/privacidade">Saiba mais</RouterLink>
-      </p>
-      <Button label="Entendi" size="small" @click="acknowledge" />
-    </div>
+  <div v-if="visible" class="consent-toast gab-card" role="note">
+    <button type="button" class="consent-toast__close" aria-label="Fechar aviso" @click="acknowledge">
+      <i class="pi pi-times" aria-hidden="true" />
+    </button>
+    <p class="consent-toast__text">
+      Usamos seus dados só para autenticação e pagamento, conforme a LGPD.
+      <RouterLink to="/privacidade">Saiba mais</RouterLink>
+    </p>
+    <Button label="Entendi" size="small" class="consent-toast__cta" @click="acknowledge" />
   </div>
 </template>
 
 <style scoped>
-.consent-banner {
+.consent-toast {
   position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  right: 1.25rem;
+  bottom: 1.25rem;
   z-index: 40;
-  background: var(--gab-surface);
-  border-top: 1px solid var(--gab-border);
-  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
-  padding-block: 0.85rem;
-}
-
-.consent-banner__inner {
+  width: min(320px, calc(100vw - 2.5rem));
+  padding: 1.1rem 1.25rem;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
   gap: 0.75rem;
 }
 
-.consent-banner__text {
+.consent-toast__close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  width: 1.75rem;
+  height: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--gab-text-muted);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.consent-toast__close:hover {
+  background: var(--gab-accent-soft);
+  color: var(--gab-accent);
+}
+
+.consent-toast__text {
   margin: 0;
+  padding-right: 1.25rem;
   font-size: 0.85rem;
+  line-height: 1.5;
   color: var(--gab-text-muted);
 }
 
-.consent-banner__text a {
+.consent-toast__text a {
   color: var(--gab-accent);
   font-weight: 600;
 }
 
-@media (min-width: 640px) {
-  .consent-banner__inner {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.5rem;
-  }
+.consent-toast__cta {
+  align-self: flex-start;
 }
 </style>

@@ -2,6 +2,22 @@
 import { RouterLink } from 'vue-router'
 import Button from 'primevue/button'
 import heroWoman from '@/assets/hero-woman.webp'
+
+const steps = [
+  {
+    title: 'Crie sua conta',
+    description: 'Cadastro com nome, e-mail e senha. Sem formulário longo, sem enrolação.',
+  },
+  {
+    title: 'Escolha um plano',
+    description: 'Mensal, semestral ou anual — o app libera a correção assim que a assinatura confirma.',
+  },
+  {
+    title: 'Corrija no app',
+    description:
+      'Aponte a câmera pro cartão-resposta preenchido e receba o resultado na hora, com o detalhamento de cada questão.',
+  },
+]
 </script>
 
 <template>
@@ -16,54 +32,48 @@ import heroWoman from '@/assets/hero-woman.webp'
           Corrija provas <span class="landing__title--accent">em segundos</span>, não em horas.
         </h1>
         <p class="landing__subtitle">
-          Assine um plano ProvaZero e libere a correção automática de gabaritos direto no app.
+          Assine um plano ProvaZero e libere a correção automática de cartões-resposta direto no
+          app.
         </p>
         <RouterLink to="/registro">
-          <Button label="Experimente grátis" icon="pi pi-arrow-right" iconPos="right" size="large" />
+          <Button label="Criar conta grátis" icon="pi pi-arrow-right" iconPos="right" size="large" />
         </RouterLink>
-        <p class="landing__hint">Sem cartão de crédito &middot; comece agora</p>
+        <p class="landing__hint">Sem cartão de crédito &middot; leva menos de um minuto</p>
       </div>
-      <img :src="heroWoman" alt="" class="landing__hero-image" />
+      <div class="landing__hero-visual">
+        <span class="landing__hero-dots" aria-hidden="true" />
+        <img :src="heroWoman" alt="" class="landing__hero-image" />
+      </div>
     </section>
 
-    <section class="gab-container landing__section">
-      <h2>Como funciona</h2>
-      <ol class="landing__steps">
-        <li class="landing__step">
-          <span class="gab-icon-circle"><i class="pi pi-file-edit" aria-hidden="true" /></span>
-          <div>
-            <h3>1. Crie sua conta</h3>
-            <p>Registre-se e escolha o plano ideal pra você.</p>
-          </div>
-        </li>
-        <li class="landing__step">
-          <span class="gab-icon-circle"><i class="pi pi-camera" aria-hidden="true" /></span>
-          <div>
-            <h3>2. Digitalize o gabarito</h3>
-            <p>Aponte a câmera do celular pro gabarito preenchido, no app.</p>
-          </div>
-        </li>
-        <li class="landing__step">
-          <span class="gab-icon-circle"><i class="pi pi-chart-bar" aria-hidden="true" /></span>
-          <div>
-            <h3>3. Veja o resultado</h3>
-            <p>Receba a correção na hora, com análises detalhadas.</p>
-          </div>
-        </li>
-      </ol>
+    <section class="landing__band">
+      <div class="gab-container landing__section">
+        <h2>Como funciona</h2>
+        <ol class="landing__steps">
+          <li v-for="(step, index) in steps" :key="step.title" class="landing__step">
+            <span class="landing__step-index" aria-hidden="true">{{ String(index + 1).padStart(2, '0') }}</span>
+            <div class="landing__step-body">
+              <h3><span class="landing__step-bullet" aria-hidden="true" />{{ step.title }}</h3>
+              <p>{{ step.description }}</p>
+            </div>
+          </li>
+        </ol>
+      </div>
     </section>
 
     <section class="gab-container landing__testimonial">
-      <blockquote class="gab-card">
-        <i class="pi pi-comment" aria-hidden="true" />
-        <p>"O ProvaZero me devolveu meu tempo. Corrijo em minutos e foco no que realmente importa: meus alunos."</p>
+      <blockquote class="landing__quote">
+        <p>
+          O ProvaZero me devolveu meu tempo. Corrijo em minutos e foco no que realmente importa:
+          meus alunos.
+        </p>
         <cite>— Professora Ana Paula</cite>
       </blockquote>
     </section>
 
-    <section class="gab-container landing__section landing__cta">
-      <h2>Comece agora</h2>
-      <p>É rápido e sem burocracia.</p>
+    <section class="gab-container landing__cta">
+      <h2>Pronto pra parar de corrigir na mão?</h2>
+      <p>Escolha um plano e libere a correção automática ainda hoje.</p>
       <RouterLink to="/planos">
         <Button label="Ver planos" icon="pi pi-arrow-right" iconPos="right" size="large" />
       </RouterLink>
@@ -77,7 +87,7 @@ import heroWoman from '@/assets/hero-woman.webp'
   flex-direction: column;
   align-items: flex-start;
   gap: 1rem;
-  padding-block: 2.5rem 3rem;
+  padding-block: 3rem 3.5rem;
 }
 
 .landing__hero-copy {
@@ -88,18 +98,13 @@ import heroWoman from '@/assets/hero-woman.webp'
   min-width: 0;
 }
 
-/* Micro-visual do hero: só entra no desktop, pra não empurrar o CTA
-   pra fora da dobra no mobile (diretriz mobile-first do produto). */
-.landing__hero-image {
-  display: none;
-}
-
 .landing__title {
   font-size: clamp(2rem, 5vw, 3rem);
   font-weight: 800;
   line-height: 1.15;
   margin: 0;
   max-width: 20ch;
+  letter-spacing: -0.01em;
 }
 
 .landing__title--accent {
@@ -119,62 +124,116 @@ import heroWoman from '@/assets/hero-woman.webp'
   margin: 0;
 }
 
-.landing__section {
-  padding-block: 2.5rem;
+/* Micro-visual do hero: só entra no desktop, pra não empurrar o CTA
+   pra fora da dobra no mobile (diretriz mobile-first do produto). */
+.landing__hero-visual {
+  display: none;
 }
 
-.landing__section h2 {
+.landing__band {
+  background: var(--gab-surface);
+  border-block: 1px solid var(--gab-border);
+}
+
+.landing__section {
+  padding-block: 3rem;
+}
+
+.landing__section h2,
+.landing__cta h2 {
   font-size: 1.6rem;
   font-weight: 800;
-  margin: 0 0 1.5rem;
+  margin: 0 0 1.75rem;
+  letter-spacing: -0.01em;
 }
 
 .landing__steps {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: grid;
-  gap: 1.5rem;
+  max-width: 40rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .landing__step {
   display: flex;
-  align-items: flex-start;
-  gap: 1rem;
+  gap: 1.25rem;
+  padding-block: 1.1rem;
+  border-top: 1px dashed var(--gab-border);
 }
 
-.landing__step h3 {
-  margin: 0 0 0.25rem;
-  font-size: 1.05rem;
+.landing__step:first-child {
+  border-top: none;
+  padding-top: 0;
 }
 
-.landing__step p {
-  margin: 0;
-  color: var(--gab-text-muted);
+.landing__step-index {
+  flex-shrink: 0;
+  width: 3rem;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--gab-accent-soft);
+  -webkit-text-stroke: 1.25px var(--gab-accent);
 }
 
-.landing__testimonial blockquote {
-  margin: 0;
+.landing__step-body h3 {
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.landing__testimonial i {
-  color: var(--gab-accent);
-  font-size: 1.5rem;
-}
-
-.landing__testimonial p {
-  font-style: italic;
-  margin: 0;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0.15rem 0 0.35rem;
   font-size: 1.05rem;
 }
 
-.landing__testimonial cite {
+.landing__step-bullet {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 999px;
+  background: var(--gab-accent);
+  flex-shrink: 0;
+}
+
+.landing__step-body p {
+  margin: 0;
   color: var(--gab-text-muted);
+}
+
+.landing__testimonial {
+  padding-block: 3.5rem;
+}
+
+.landing__quote {
+  position: relative;
+  max-width: 38rem;
+  margin: 0;
+  padding-left: 2rem;
+}
+
+.landing__quote::before {
+  content: '\201C';
+  position: absolute;
+  left: -0.35rem;
+  top: -1.5rem;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 4.5rem;
+  color: var(--gab-accent);
+  opacity: 0.8;
+}
+
+.landing__quote p {
+  margin: 0 0 0.75rem;
+  font-size: 1.2rem;
+  line-height: 1.5;
+}
+
+.landing__quote cite {
+  display: block;
   font-style: normal;
   font-weight: 600;
+  color: var(--gab-text-muted);
+  font-size: 0.9rem;
 }
 
 .landing__cta {
@@ -182,6 +241,11 @@ import heroWoman from '@/assets/hero-woman.webp'
   flex-direction: column;
   align-items: flex-start;
   gap: 0.75rem;
+  padding-block: 3rem 4.5rem;
+}
+
+.landing__cta h2 {
+  margin-bottom: 0;
 }
 
 .landing__cta p {
@@ -202,19 +266,32 @@ import heroWoman from '@/assets/hero-woman.webp'
     max-width: 32rem;
   }
 
-  .landing__hero-image {
+  .landing__hero-visual {
     display: block;
+    position: relative;
     width: min(22rem, 40%);
     flex-shrink: 0;
+  }
+
+  .landing__hero-dots {
+    position: absolute;
+    inset: -1.5rem -2rem auto auto;
+    width: 8rem;
+    height: 8rem;
+    background-image: radial-gradient(var(--gab-accent-soft) 2px, transparent 2px);
+    background-size: 14px 14px;
+    z-index: 0;
+  }
+
+  .landing__hero-image {
+    position: relative;
+    z-index: 1;
+    width: 100%;
     object-fit: contain;
   }
 
-  .landing__steps {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
   .landing__step {
-    flex-direction: column;
+    padding-block: 1.4rem;
   }
 }
 </style>

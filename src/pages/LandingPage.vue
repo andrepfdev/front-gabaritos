@@ -579,7 +579,8 @@ const steps = [
 .landing__cta {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  text-align: center;
   gap: 0.75rem;
   padding-block: 3rem 4.5rem;
 }
@@ -605,6 +606,11 @@ const steps = [
     flex: 1;
     max-width: 32rem;
     padding-bottom: 0.5rem;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .landing__cta {
     align-items: flex-start;
     text-align: left;
   }

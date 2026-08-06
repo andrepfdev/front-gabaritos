@@ -4,7 +4,58 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ProvaZero</title>
+    <meta name="theme-color" content="#e8503a" />
+
+    <title>ProvaZero — Corrija provas e gabaritos em segundos</title>
+    <meta
+      name="description"
+      content="Corretor de prova online: aponte a câmera do celular pro cartão-resposta e receba a correção automática do gabarito na hora, com o detalhamento de cada questão. Feito pra professores."
+    />
+    <link rel="canonical" href="https://provazero.app.br/" />
+
+    <!-- Open Graph (WhatsApp, Facebook, Instagram) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content="ProvaZero" />
+    <meta property="og:url" content="https://provazero.app.br/" />
+    <meta property="og:title" content="ProvaZero — Corrija provas e gabaritos em segundos" />
+    <meta
+      property="og:description"
+      content="Corretor de prova online: aponte a câmera do celular pro cartão-resposta e receba a correção automática do gabarito na hora. Feito pra professores."
+    />
+    <meta property="og:image" content="https://provazero.app.br/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="ProvaZero — Corrija provas em segundos, não em horas" />
+
+    <!-- Twitter/X Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ProvaZero — Corrija provas e gabaritos em segundos" />
+    <meta
+      name="twitter:description"
+      content="Corretor de prova online: aponte a câmera do celular pro cartão-resposta e receba a correção automática do gabarito na hora."
+    />
+    <meta name="twitter:image" content="https://provazero.app.br/og-image.png" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "ProvaZero",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Android, iOS",
+        "description": "Corretor de prova online que corrige gabaritos automaticamente pela câmera do celular, com resultado na hora e detalhamento por questão. Feito para professores.",
+        "url": "https://provazero.app.br/",
+        "audience": {
+          "@type": "EducationalAudience",
+          "educationalRole": "teacher"
+        }
+      }
+    </script>
+    <!-- Preços não entram aqui: mudam na API e um JSON-LD estático ficaria
+         desatualizado. O bloco de preço real é injetado em runtime pela
+         PlansPage a partir dos dados ao vivo (ver src/pages/PlansPage.vue). -->
+
     <script>
       (function () {
         try {

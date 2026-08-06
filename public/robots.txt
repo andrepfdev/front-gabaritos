@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /conta/
+Disallow: /perfil
+
+Sitemap: https://provazero.app.br/sitemap.xml

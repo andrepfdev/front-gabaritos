@@ -102,9 +102,9 @@ const steps = [
     description: 'Mensal, semestral ou anual — o app libera a correção assim que a assinatura confirma.',
   },
   {
-    title: 'Corrija no app',
+    title: 'Corrija o gabarito no app',
     description:
-      'Aponte a câmera pro cartão-resposta preenchido e receba o resultado na hora, com o detalhamento de cada questão.',
+      'Aponte a câmera pro cartão-resposta preenchido e receba a correção da prova na hora, com o detalhamento de cada questão.',
   },
 ]
 </script>
@@ -115,15 +115,15 @@ const steps = [
       <div class="landing__hero-copy">
         <span class="landing__hero-dots landing__hero-dots--mobile" aria-hidden="true" />
         <span class="gab-pill-badge">
-          <i class="pi pi-heart-fill" aria-hidden="true" />
-          Feito para professores
+          <i class="pi pi-star-fill" aria-hidden="true" />
+          O melhor app pra corrigir prova
         </span>
         <h1 class="landing__title">
           Corrija provas <span class="landing__title--accent">em segundos</span>, não em horas.
         </h1>
         <p class="landing__subtitle">
-          Assine um plano ProvaZero e libere a correção automática de cartões-resposta direto no
-          app.
+          O jeito mais simples de corrigir gabarito pelo celular: aponte a câmera pro
+          cartão-resposta e receba a correção automática da prova na hora.
         </p>
         <RouterLink :to="authStore.isAuthenticated ? `/conta/${authStore.userId}` : '/registro'">
           <Button

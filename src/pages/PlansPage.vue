@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import PlanCard from '@/components/plans/PlanCard.vue'
 import LoadingState from '@/components/common/LoadingState.vue'
@@ -34,8 +34,47 @@ const recommendedPlanId = computed(() => {
 const subscribingPlanId = ref<string | null>(null)
 const subscribeError = ref<string | null>(null)
 
+const JSON_LD_ID = 'plans-json-ld'
+
+// Injeta o JSON-LD de preços a partir dos dados reais da API — nunca fixo no
+// HTML, pra não ficar desatualizado se os preços mudarem (ver index.html).
+function injectPlansJsonLd() {
+  if (plansStore.plans.length === 0) return
+
+  const prices = plansStore.plans.map((plan) => plan.price)
+  const payload = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'ProvaZero',
+    applicationCategory: 'EducationalApplication',
+    offers: {
+      '@type': 'AggregateOffer',
+      priceCurrency: plansStore.plans[0]?.currency ?? 'BRL',
+      lowPrice: Math.min(...prices).toFixed(2),
+      highPrice: Math.max(...prices).toFixed(2),
+      offerCount: plansStore.plans.length,
+    },
+  }
+
+  let script = document.getElementById(JSON_LD_ID) as HTMLScriptElement | null
+  if (!script) {
+    script = document.createElement('script')
+    script.id = JSON_LD_ID
+    script.type = 'application/ld+json'
+    document.head.appendChild(script)
+  }
+  script.textContent = JSON.stringify(payload)
+}
+
 onMounted(() => {
-  plansStore.fetchPlans().catch(() => undefined)
+  plansStore
+    .fetchPlans()
+    .then(injectPlansJsonLd)
+    .catch(() => undefined)
+})
+
+onBeforeUnmount(() => {
+  document.getElementById(JSON_LD_ID)?.remove()
 })
 
 async function handleSubscribe(planId: string) {

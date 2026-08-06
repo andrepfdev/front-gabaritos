@@ -209,7 +209,7 @@ const steps = [
       <h2>Pronto pra parar de corrigir na mão?</h2>
       <p>Escolha um plano e libere a correção automática ainda hoje.</p>
       <RouterLink to="/planos">
-        <Button label="Ver planos" icon="pi pi-arrow-circle-right" iconPos="right" size="large" />
+        <Button label="Ver planos" icon="pi pi-arrow-right" iconPos="right" size="large" />
       </RouterLink>
     </section>
   </main>

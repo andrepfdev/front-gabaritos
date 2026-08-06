@@ -249,12 +249,14 @@ const steps = [
       </div>
     </section>
 
-    <section class="gab-container landing__cta">
-      <h2>Pronto pra parar de corrigir na mão?</h2>
-      <p>Escolha um plano e libere a correção automática ainda hoje.</p>
-      <RouterLink to="/planos">
-        <Button label="Ver planos" icon="pi pi-arrow-right" iconPos="right" size="large" />
-      </RouterLink>
+    <section class="gab-container landing__cta-wrap">
+      <div class="landing__cta">
+        <h2>Pronto pra parar de corrigir na mão?</h2>
+        <p>Escolha um plano e libere a correção automática ainda hoje.</p>
+        <RouterLink to="/planos">
+          <Button label="Ver planos" icon="pi pi-arrow-right" iconPos="right" size="large" />
+        </RouterLink>
+      </div>
     </section>
   </main>
 </template>
@@ -603,13 +605,19 @@ const steps = [
   }
 }
 
+.landing__cta-wrap {
+  padding-block: 3rem 4.5rem;
+}
+
 .landing__cta {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   gap: 0.75rem;
-  padding-block: 3rem 4.5rem;
+  padding: 2.5rem 1.5rem;
+  background: var(--gab-accent-soft);
+  border-radius: var(--gab-radius-lg);
 }
 
 .landing__cta h2 {
@@ -633,11 +641,6 @@ const steps = [
     flex: 1;
     max-width: 32rem;
     padding-bottom: 0.5rem;
-    align-items: flex-start;
-    text-align: left;
-  }
-
-  .landing__cta {
     align-items: flex-start;
     text-align: left;
   }

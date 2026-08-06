@@ -5,9 +5,11 @@
   --gab-text-muted: #6b6b6b;
   --gab-accent: #e8503a;
   --gab-accent-soft: #fde1de;
+  --gab-secondary: #44403c;
+  --gab-secondary-soft: #e7e5e4;
   --gab-border: #ececec;
-  --gab-radius-lg: 20px;
-  --gab-radius-md: 14px;
+  --gab-radius-lg: 12px;
+  --gab-radius-md: 8px;
   --gab-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
   --gab-container: 1120px;
   --gab-space: 1rem;
@@ -21,6 +23,8 @@
     --gab-text-muted: #a3a3a3;
     --gab-accent: #f0736a;
     --gab-accent-soft: #3a201d;
+    --gab-secondary: #d6d3d1;
+    --gab-secondary-soft: #333130;
     --gab-border: #2b2b2b;
     --gab-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
   }
@@ -35,6 +39,8 @@
   --gab-text-muted: #a3a3a3;
   --gab-accent: #f0736a;
   --gab-accent-soft: #3a201d;
+  --gab-secondary: #d6d3d1;
+  --gab-secondary-soft: #333130;
   --gab-border: #2b2b2b;
   --gab-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
 }
@@ -46,6 +52,8 @@
   --gab-text-muted: #6b6b6b;
   --gab-accent: #e8503a;
   --gab-accent-soft: #fde1de;
+  --gab-secondary: #44403c;
+  --gab-secondary-soft: #e7e5e4;
   --gab-border: #ececec;
   --gab-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 }
@@ -157,6 +165,49 @@ body {
 .gab-field label {
   font-weight: 600;
   font-size: 0.9rem;
+}
+
+.gab-form__hint {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--gab-text-muted);
+  margin: 0;
+}
+
+.gab-form__hint a {
+  color: var(--gab-accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.gab-form__hint a:hover {
+  text-decoration: underline;
+}
+
+.gab-form__secondary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  color: var(--gab-text-muted);
+  text-align: center;
+  padding-top: 0.4rem;
+  border-top: 1px solid var(--gab-border);
+}
+
+.gab-form__secondary-link {
+  width: 100%;
+}
+
+.gab-btn-soft.p-button {
+  background: var(--gab-secondary-soft) !important;
+  color: var(--gab-secondary) !important;
+  border-color: transparent !important;
+}
+
+.gab-btn-soft.p-button:hover {
+  background: var(--gab-secondary-soft) !important;
+  filter: brightness(0.95);
 }
 
 /* Botões e inputs com alvo de toque generoso (diretriz mobile) */

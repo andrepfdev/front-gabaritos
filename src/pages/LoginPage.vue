@@ -30,7 +30,14 @@ const { loading, error, run } = useAsyncAction(async () => {
 
       <div class="gab-field">
         <label for="email">E-mail</label>
-        <InputText id="email" v-model="email" type="email" autocomplete="email" required />
+        <InputText
+          id="email"
+          v-model="email"
+          type="email"
+          autocomplete="email"
+          placeholder="seu@email.com"
+          required
+        />
       </div>
 
       <div class="gab-field">
@@ -41,6 +48,7 @@ const { loading, error, run } = useAsyncAction(async () => {
           toggleMask
           :feedback="false"
           autocomplete="current-password"
+          placeholder="Sua senha"
           required
           fluid
         />
@@ -51,18 +59,13 @@ const { loading, error, run } = useAsyncAction(async () => {
       <p class="gab-form__hint">
         <RouterLink to="/recuperar-senha">Esqueci minha senha</RouterLink>
       </p>
-      <p class="gab-form__hint">
-        Ainda não tem conta? <RouterLink to="/registro">Cadastre-se</RouterLink>
-      </p>
+
+      <div class="gab-form__secondary">
+        <span>Ainda não tem conta?</span>
+        <RouterLink to="/registro" class="gab-form__secondary-link">
+          <Button label="Cadastre-se" class="gab-btn-soft" text fluid />
+        </RouterLink>
+      </div>
     </form>
   </main>
 </template>
-
-<style scoped>
-.gab-form__hint {
-  text-align: center;
-  font-size: 0.9rem;
-  color: var(--gab-text-muted);
-  margin: 0;
-}
-</style>

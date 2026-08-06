@@ -22,7 +22,14 @@ function acknowledge() {
       Usamos seus dados só para autenticação e pagamento, conforme a LGPD.
       <RouterLink to="/privacidade">Saiba mais</RouterLink>
     </p>
-    <Button label="Entendi" size="small" class="consent-toast__cta" @click="acknowledge" />
+    <Button
+      label="Entendi"
+      size="small"
+      severity="secondary"
+      outlined
+      class="consent-toast__cta"
+      @click="acknowledge"
+    />
   </div>
 </template>
 

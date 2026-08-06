@@ -30,7 +30,14 @@ const { loading, error, run } = useAsyncAction(async () => {
 
       <div class="gab-field">
         <label for="email">E-mail</label>
-        <InputText id="email" v-model="email" type="email" autocomplete="email" required />
+        <InputText
+          id="email"
+          v-model="email"
+          type="email"
+          autocomplete="email"
+          placeholder="seu@email.com"
+          required
+        />
       </div>
 
       <Button type="submit" label="Enviar" :loading="loading" />
@@ -41,12 +48,3 @@ const { loading, error, run } = useAsyncAction(async () => {
     </form>
   </main>
 </template>
-
-<style scoped>
-.gab-form__hint {
-  text-align: center;
-  font-size: 0.9rem;
-  color: var(--gab-text-muted);
-  margin: 0;
-}
-</style>

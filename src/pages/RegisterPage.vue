@@ -14,8 +14,12 @@ const router = useRouter()
 const name = ref('')
 const email = ref('')
 const password = ref('')
+const confirmPassword = ref('')
 
 const { loading, error, run } = useAsyncAction(async () => {
+  if (password.value !== confirmPassword.value) {
+    throw new Error('As senhas não coincidem.')
+  }
   await authStore.register(name.value, email.value, password.value)
   router.push(`/conta/${authStore.userId}`)
 })
@@ -29,12 +33,19 @@ const { loading, error, run } = useAsyncAction(async () => {
 
       <div class="gab-field">
         <label for="name">Nome</label>
-        <InputText id="name" v-model="name" autocomplete="name" required />
+        <InputText id="name" v-model="name" autocomplete="name" placeholder="Seu nome" required />
       </div>
 
       <div class="gab-field">
         <label for="email">E-mail</label>
-        <InputText id="email" v-model="email" type="email" autocomplete="email" required />
+        <InputText
+          id="email"
+          v-model="email"
+          type="email"
+          autocomplete="email"
+          placeholder="seu@email.com"
+          required
+        />
       </div>
 
       <div class="gab-field">
@@ -44,6 +55,21 @@ const { loading, error, run } = useAsyncAction(async () => {
           v-model="password"
           toggleMask
           autocomplete="new-password"
+          placeholder="Crie uma senha"
+          required
+          fluid
+        />
+      </div>
+
+      <div class="gab-field">
+        <label for="confirm-password">Confirmar senha</label>
+        <Password
+          id="confirm-password"
+          v-model="confirmPassword"
+          toggleMask
+          :feedback="false"
+          autocomplete="new-password"
+          placeholder="Repita a senha"
           required
           fluid
         />
@@ -57,12 +83,3 @@ const { loading, error, run } = useAsyncAction(async () => {
     </form>
   </main>
 </template>
-
-<style scoped>
-.gab-form__hint {
-  text-align: center;
-  font-size: 0.9rem;
-  color: var(--gab-text-muted);
-  margin: 0;
-}
-</style>

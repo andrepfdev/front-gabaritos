@@ -86,7 +86,7 @@ async function handleSubscribe(planId: string) {
   subscribeError.value = null
   subscribingPlanId.value = planId
   try {
-    const returnUrl = `${window.location.origin}/conta/${authStore.userId}`
+    const returnUrl = `${window.location.origin}/conta/${authStore.userId}?checkout=success`
     const { url } = await billingStore.subscribe(authStore.userId, planId, returnUrl)
     window.location.href = url
   } catch (e) {

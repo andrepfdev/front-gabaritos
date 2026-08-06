@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useConfirm } from 'primevue/useconfirm'
+import { useRoute, useRouter } from 'vue-router'
 import SubscriptionStatusCard from '@/components/billing/SubscriptionStatusCard.vue'
 import PaymentHistoryList from '@/components/billing/PaymentHistoryList.vue'
+import AppDownloadPrompt from '@/components/billing/AppDownloadPrompt.vue'
 import LoadingState from '@/components/common/LoadingState.vue'
 import FormError from '@/components/common/FormError.vue'
 import UserAvatar from '@/components/common/UserAvatar.vue'
@@ -16,8 +18,19 @@ const authStore = useAuthStore()
 const billingStore = useBillingStore()
 const confirm = useConfirm()
 const toast = useToastFeedback()
+const route = useRoute()
+const router = useRouter()
 
 const cancelLoading = ref(false)
+
+// Retorno de checkout Stripe com sucesso: PlansPage.vue adiciona esse query
+// param ao returnUrl. Usado só pra reforçar o download do app; removido da
+// URL em seguida pra não persistir ao recarregar a página.
+const justSubscribed = ref(route.query.checkout === 'success')
+if (justSubscribed.value) {
+  const { checkout: _checkout, ...rest } = route.query
+  router.replace({ query: rest })
+}
 
 async function loadBilling() {
   await billingStore.fetchBilling(props.userId)
@@ -67,6 +80,8 @@ function confirmCancel() {
         <p v-if="authStore.user?.email" class="account-page__email">{{ authStore.user.email }}</p>
       </div>
     </div>
+
+    <AppDownloadPrompt v-if="justSubscribed" />
 
     <LoadingState v-if="billingStore.status === 'loading' && !billingStore.billing" label="Carregando sua conta…" />
     <FormError v-else-if="billingStore.status === 'error'" :message="billingStore.error" />

@@ -75,6 +75,15 @@ const router = createRouter({
       meta: { requiresAuth: true, title: 'Meu perfil — ProvaZero' },
     },
     {
+      path: '/download',
+      name: 'download',
+      component: () => import('@/pages/DownloadPage.vue'),
+      meta: {
+        title: 'Baixar o app — ProvaZero',
+        description: 'Baixe o app ProvaZero e instale no seu Android ou iPhone. Instruções passo a passo.',
+      },
+    },
+    {
       path: '/privacidade',
       name: 'privacy-policy',
       component: () => import('@/pages/PrivacyPolicyPage.vue'),

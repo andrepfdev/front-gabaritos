@@ -284,7 +284,7 @@ const steps = [
   .landing__hero-visual {
     display: block;
     position: relative;
-    width: min(27rem, 44%);
+    width: min(23rem, 38%);
     flex-shrink: 0;
   }
 

@@ -150,10 +150,11 @@ body {
 .gab-form {
   display: flex;
   flex-direction: column;
-  gap: 1.1rem;
+  gap: 1.35rem;
   width: 100%;
   max-width: 420px;
   margin: 0 auto;
+  padding-block: 0.5rem;
 }
 
 .gab-field {

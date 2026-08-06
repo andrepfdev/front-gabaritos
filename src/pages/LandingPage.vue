@@ -79,6 +79,19 @@ function handleManualNav(action: () => void) {
 onMounted(startAutoplay)
 onBeforeUnmount(stopAutoplay)
 
+const heroBadges = [
+  {
+    icon: 'pi pi-check-circle',
+    title: 'Correção automática',
+    subtitle: 'Direto pelo cartão-resposta',
+  },
+  {
+    icon: 'pi pi-bolt',
+    title: 'Resultado na hora',
+    subtitle: 'Sem planilha, sem demora',
+  },
+]
+
 const steps = [
   {
     title: 'Crie sua conta',
@@ -100,6 +113,7 @@ const steps = [
   <main class="landing">
     <section class="gab-container landing__hero">
       <div class="landing__hero-copy">
+        <span class="landing__hero-dots landing__hero-dots--mobile" aria-hidden="true" />
         <span class="gab-pill-badge">
           <i class="pi pi-heart-fill" aria-hidden="true" />
           Feito para professores
@@ -123,22 +137,33 @@ const steps = [
           Sem pedir CPF &middot; leva menos de um minuto
         </p>
         <StoreBadges class="landing__hero-badges" />
+
+        <!-- Só no mobile: os mesmos balões de uso, em fluxo normal (sem foto
+             pesada) — no desktop eles reaparecem sobrepostos na imagem, mais
+             abaixo. -->
+        <div class="landing__hero-badges-flow">
+          <div v-for="badge in heroBadges" :key="badge.title" class="landing__hero-badge landing__hero-badge--flow">
+            <i :class="badge.icon" aria-hidden="true" />
+            <div>
+              <strong>{{ badge.title }}</strong>
+              <span>{{ badge.subtitle }}</span>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="landing__hero-visual">
         <span class="landing__hero-dots" aria-hidden="true" />
         <img :src="heroWoman" alt="" class="landing__hero-image" />
-        <div class="landing__hero-badge landing__hero-badge--top">
-          <i class="pi pi-check-circle" aria-hidden="true" />
+        <div
+          v-for="(badge, index) in heroBadges"
+          :key="badge.title"
+          class="landing__hero-badge"
+          :class="index === 0 ? 'landing__hero-badge--top' : 'landing__hero-badge--bottom'"
+        >
+          <i :class="badge.icon" aria-hidden="true" />
           <div>
-            <strong>Correção automática</strong>
-            <span>Direto pelo cartão-resposta</span>
-          </div>
-        </div>
-        <div class="landing__hero-badge landing__hero-badge--bottom">
-          <i class="pi pi-bolt" aria-hidden="true" />
-          <div>
-            <strong>Resultado na hora</strong>
-            <span>Sem planilha, sem demora</span>
+            <strong>{{ badge.title }}</strong>
+            <span>{{ badge.subtitle }}</span>
           </div>
         </div>
       </div>
@@ -219,7 +244,7 @@ const steps = [
 .landing__hero {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 1rem;
   padding-block: 3rem 3.5rem;
 }
@@ -227,9 +252,11 @@ const steps = [
 .landing__hero-copy {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  text-align: center;
   gap: 1rem;
   min-width: 0;
+  position: relative;
 }
 
 .landing__title {
@@ -266,6 +293,61 @@ const steps = [
    pra fora da dobra no mobile (diretriz mobile-first do produto). */
 .landing__hero-visual {
   display: none;
+}
+
+/* Padrão de bolinhas (motivo do cartão-resposta), bem sutil, centralizado
+   atrás do título no mobile — leve, é só CSS, sem peso de imagem. */
+.landing__hero-dots--mobile {
+  position: absolute;
+  top: -0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 9rem;
+  height: 4rem;
+  background-image: radial-gradient(var(--gab-accent-soft) 2px, transparent 2px);
+  background-size: 16px 16px;
+  opacity: 0.6;
+  z-index: -1;
+}
+
+/* Balões de uso em fluxo normal — só no mobile, sem depender da foto
+   (que fica só no desktop). No desktop eles reaparecem sobrepostos na
+   imagem (ver .landing__hero-badge--top/--bottom mais abaixo). */
+.landing__hero-badges-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 22rem;
+  margin-top: 0.5rem;
+}
+
+.landing__hero-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 0.85rem;
+  background: var(--gab-surface);
+  border-radius: var(--gab-radius-md);
+  box-shadow: var(--gab-shadow);
+  font-size: 0.8rem;
+  line-height: 1.3;
+  text-align: left;
+}
+
+.landing__hero-badge i {
+  color: var(--gab-accent);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.landing__hero-badge strong {
+  display: block;
+  font-size: 0.85rem;
+}
+
+.landing__hero-badge span {
+  color: var(--gab-text-muted);
 }
 
 .landing__band {
@@ -523,6 +605,18 @@ const steps = [
     flex: 1;
     max-width: 32rem;
     padding-bottom: 0.5rem;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .landing__hero-dots--mobile {
+    display: none;
+  }
+
+  .landing__hero-badges-flow {
+    /* No desktop os mesmos balões reaparecem sobrepostos na foto, mais
+       abaixo — evita duplicar o conteúdo nos dois lugares ao mesmo tempo. */
+    display: none;
   }
 
   .landing__hero-visual {
@@ -553,34 +647,11 @@ const steps = [
     -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 98%);
   }
 
-  .landing__hero-badge {
+  .landing__hero-visual .landing__hero-badge {
     position: absolute;
     z-index: 2;
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
     max-width: 11.5rem;
-    padding: 0.65rem 0.85rem;
-    background: var(--gab-surface);
-    border-radius: var(--gab-radius-md);
-    box-shadow: var(--gab-shadow);
     font-size: 0.75rem;
-    line-height: 1.3;
-  }
-
-  .landing__hero-badge i {
-    color: var(--gab-accent);
-    font-size: 1.1rem;
-    flex-shrink: 0;
-  }
-
-  .landing__hero-badge strong {
-    display: block;
-    font-size: 0.8rem;
-  }
-
-  .landing__hero-badge span {
-    color: var(--gab-text-muted);
   }
 
   .landing__hero-badge--top {

@@ -92,6 +92,17 @@ const heroBadges = [
   },
 ]
 
+// Só no mobile: uma terceira vantagem entra na lista em fluxo (o desktop
+// continua mostrando só as duas sobrepostas na foto, ver heroBadges acima).
+const heroBadgesMobile = [
+  ...heroBadges,
+  {
+    icon: 'pi pi-mobile',
+    title: 'Direto do celular',
+    subtitle: 'Sem precisar de scanner',
+  },
+]
+
 const steps = [
   {
     title: 'Crie sua conta',
@@ -142,7 +153,7 @@ const steps = [
              pesada) — no desktop eles reaparecem sobrepostos na imagem, mais
              abaixo. -->
         <div class="landing__hero-badges-flow">
-          <div v-for="badge in heroBadges" :key="badge.title" class="landing__hero-badge landing__hero-badge--flow">
+          <div v-for="badge in heroBadgesMobile" :key="badge.title" class="landing__hero-badge landing__hero-badge--flow">
             <i :class="badge.icon" aria-hidden="true" />
             <div>
               <strong>{{ badge.title }}</strong>
@@ -260,7 +271,7 @@ const steps = [
 }
 
 .landing__title {
-  font-size: clamp(2rem, 5vw, 3rem);
+  font-size: clamp(2.5rem, 5vw, 3rem);
   font-weight: 800;
   line-height: 1.15;
   margin: 0;
@@ -316,9 +327,10 @@ const steps = [
 .landing__hero-badges-flow {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  align-items: center;
+  gap: 0.5rem;
   width: 100%;
-  max-width: 22rem;
+  max-width: 18rem;
   margin-top: 0.5rem;
 }
 
@@ -348,6 +360,13 @@ const steps = [
 
 .landing__hero-badge span {
   color: var(--gab-text-muted);
+}
+
+/* Só no mobile: balões um pouco menores e centralizados, já que agora são
+   três em vez de dois no fluxo normal (ver .landing__hero-badges-flow). */
+.landing__hero-badge--flow {
+  width: 100%;
+  padding: 0.5rem 0.7rem;
 }
 
 .landing__band {

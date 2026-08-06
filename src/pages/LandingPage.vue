@@ -43,6 +43,20 @@ const steps = [
       <div class="landing__hero-visual">
         <span class="landing__hero-dots" aria-hidden="true" />
         <img :src="heroWoman" alt="" class="landing__hero-image" />
+        <div class="landing__hero-badge landing__hero-badge--top">
+          <i class="pi pi-check-circle" aria-hidden="true" />
+          <div>
+            <strong>Correção automática</strong>
+            <span>Direto pelo cartão-resposta</span>
+          </div>
+        </div>
+        <div class="landing__hero-badge landing__hero-badge--bottom">
+          <i class="pi pi-bolt" aria-hidden="true" />
+          <div>
+            <strong>Resultado na hora</strong>
+            <span>Sem planilha, sem demora</span>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -256,7 +270,7 @@ const steps = [
 @media (min-width: 1024px) {
   .landing__hero {
     flex-direction: row;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
     gap: 3rem;
   }
@@ -264,12 +278,13 @@ const steps = [
   .landing__hero-copy {
     flex: 1;
     max-width: 32rem;
+    padding-bottom: 0.5rem;
   }
 
   .landing__hero-visual {
     display: block;
     position: relative;
-    width: min(22rem, 40%);
+    width: min(27rem, 44%);
     flex-shrink: 0;
   }
 
@@ -288,6 +303,50 @@ const steps = [
     z-index: 1;
     width: 100%;
     object-fit: contain;
+    /* A foto é cortada na cintura na imagem original; um degradê suave no
+       rodapé dissolve essa borda reta em vez de deixar um corte abrupto. */
+    mask-image: linear-gradient(to bottom, black 80%, transparent 98%);
+    -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 98%);
+  }
+
+  .landing__hero-badge {
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    max-width: 11.5rem;
+    padding: 0.65rem 0.85rem;
+    background: var(--gab-surface);
+    border-radius: var(--gab-radius-md);
+    box-shadow: var(--gab-shadow);
+    font-size: 0.75rem;
+    line-height: 1.3;
+  }
+
+  .landing__hero-badge i {
+    color: var(--gab-accent);
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .landing__hero-badge strong {
+    display: block;
+    font-size: 0.8rem;
+  }
+
+  .landing__hero-badge span {
+    color: var(--gab-text-muted);
+  }
+
+  .landing__hero-badge--top {
+    top: 0.5rem;
+    left: -2.5rem;
+  }
+
+  .landing__hero-badge--bottom {
+    bottom: 3rem;
+    right: -2rem;
   }
 
   .landing__step {

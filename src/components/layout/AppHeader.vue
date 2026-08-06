@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import ThemeToggle from '@/components/common/ThemeToggle.vue'
 
 const authStore = useAuthStore()
 </script>
@@ -21,6 +22,7 @@ const authStore = useAuthStore()
         <template v-else>
           <RouterLink to="/login">Entrar</RouterLink>
         </template>
+        <ThemeToggle />
       </nav>
     </div>
   </header>

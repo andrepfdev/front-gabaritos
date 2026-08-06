@@ -3,6 +3,9 @@ import { RouterLink } from 'vue-router'
 import Button from 'primevue/button'
 import StoreBadges from '@/components/common/StoreBadges.vue'
 import heroWoman from '@/assets/hero-woman.webp'
+import { useAuthStore } from '@/stores/auth'
+
+const authStore = useAuthStore()
 
 const steps = [
   {
@@ -36,10 +39,17 @@ const steps = [
           Assine um plano ProvaZero e libere a correção automática de cartões-resposta direto no
           app.
         </p>
-        <RouterLink to="/registro">
-          <Button label="Criar conta grátis" icon="pi pi-arrow-right" iconPos="right" size="large" />
+        <RouterLink :to="authStore.isAuthenticated ? `/conta/${authStore.userId}` : '/registro'">
+          <Button
+            :label="authStore.isAuthenticated ? 'Ir para minha conta' : 'Criar conta grátis'"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            size="large"
+          />
         </RouterLink>
-        <p class="landing__hint">Sem pedir CPF &middot; leva menos de um minuto</p>
+        <p v-if="!authStore.isAuthenticated" class="landing__hint">
+          Sem pedir CPF &middot; leva menos de um minuto
+        </p>
         <StoreBadges class="landing__hero-badges" />
       </div>
       <div class="landing__hero-visual">

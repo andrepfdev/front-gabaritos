@@ -7,6 +7,7 @@ import ConfirmationService from 'primevue/confirmationservice'
 import App from './App.vue'
 import router from './router'
 import { gabaritosPreset } from './theme'
+import { ptBR } from './locale'
 import { useAuthStore } from './stores/auth'
 
 import 'primeicons/primeicons.css'
@@ -16,6 +17,7 @@ const app = createApp(App)
 
 app.use(createPinia())
 app.use(PrimeVue, {
+  locale: ptBR,
   theme: {
     preset: gabaritosPreset,
     options: {

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Tag from 'primevue/tag'
 import type { Payment } from '@/types/domain'
+import { paymentStatusLabel } from '@/utils/statusLabels'
 
 defineProps<{ payments: Payment[] }>()
 
@@ -33,7 +34,7 @@ function statusSeverity(status: string) {
       <article v-for="payment in payments" :key="payment.id" class="gab-card payment-history__item">
         <div class="payment-history__row">
           <span class="payment-history__amount">{{ formatPrice(payment.amount, payment.currency) }}</span>
-          <Tag :value="payment.status" :severity="statusSeverity(payment.status)" />
+          <Tag :value="paymentStatusLabel(payment.status)" :severity="statusSeverity(payment.status)" />
         </div>
         <span v-if="payment.createdAt" class="payment-history__date">{{ formatDate(payment.createdAt) }}</span>
       </article>

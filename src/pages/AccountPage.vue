@@ -5,6 +5,7 @@ import SubscriptionStatusCard from '@/components/billing/SubscriptionStatusCard.
 import PaymentHistoryList from '@/components/billing/PaymentHistoryList.vue'
 import LoadingState from '@/components/common/LoadingState.vue'
 import FormError from '@/components/common/FormError.vue'
+import UserAvatar from '@/components/common/UserAvatar.vue'
 import { useAuthStore } from '@/stores/auth'
 import { useBillingStore } from '@/stores/billing'
 import { useToastFeedback } from '@/composables/useToastFeedback'
@@ -59,7 +60,13 @@ function confirmCancel() {
 
 <template>
   <main class="gab-container gab-page account-page">
-    <h1>Olá, {{ authStore.user?.name ?? 'de novo' }}</h1>
+    <div class="account-page__identity">
+      <UserAvatar :name="authStore.user?.name" />
+      <div>
+        <h1>Olá, {{ authStore.user?.name ?? 'de novo' }}</h1>
+        <p v-if="authStore.user?.email" class="account-page__email">{{ authStore.user.email }}</p>
+      </div>
+    </div>
 
     <LoadingState v-if="billingStore.status === 'loading' && !billingStore.billing" label="Carregando sua conta…" />
     <FormError v-else-if="billingStore.status === 'error'" :message="billingStore.error" />
@@ -82,5 +89,21 @@ function confirmCancel() {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+}
+
+.account-page__identity {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.account-page__identity h1 {
+  margin: 0;
+}
+
+.account-page__email {
+  margin: 0.15rem 0 0;
+  color: var(--gab-text-muted);
+  font-size: 0.9rem;
 }
 </style>

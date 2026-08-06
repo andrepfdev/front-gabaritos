@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import Button from 'primevue/button'
+import StoreBadges from '@/components/common/StoreBadges.vue'
 import heroWoman from '@/assets/hero-woman.webp'
 
 const steps = [
@@ -38,7 +39,8 @@ const steps = [
         <RouterLink to="/registro">
           <Button label="Criar conta grátis" icon="pi pi-arrow-right" iconPos="right" size="large" />
         </RouterLink>
-        <p class="landing__hint">Sem cartão de crédito &middot; leva menos de um minuto</p>
+        <p class="landing__hint">Sem pedir CPF &middot; leva menos de um minuto</p>
+        <StoreBadges class="landing__hero-badges" />
       </div>
       <div class="landing__hero-visual">
         <span class="landing__hero-dots" aria-hidden="true" />
@@ -136,6 +138,10 @@ const steps = [
   color: var(--gab-text-muted);
   font-size: 0.85rem;
   margin: 0;
+}
+
+.landing__hero-badges {
+  margin-top: 0.25rem;
 }
 
 /* Micro-visual do hero: só entra no desktop, pra não empurrar o CTA

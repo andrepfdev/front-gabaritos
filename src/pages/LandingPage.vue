@@ -103,6 +103,14 @@ const heroBadgesMobile = [
   },
 ]
 
+// Posição de cada balão sobreposto na foto, no desktop — segue a ordem de
+// heroBadgesMobile (ver .landing__hero-badge--top/--bottom/--waist no CSS).
+const heroVisualBadgePositions = [
+  'landing__hero-badge--top',
+  'landing__hero-badge--bottom',
+  'landing__hero-badge--waist',
+]
+
 const steps = [
   {
     title: 'Crie sua conta',
@@ -166,10 +174,10 @@ const steps = [
         <span class="landing__hero-dots" aria-hidden="true" />
         <img :src="heroWoman" alt="" class="landing__hero-image" />
         <div
-          v-for="(badge, index) in heroBadges"
+          v-for="(badge, index) in heroBadgesMobile"
           :key="badge.title"
           class="landing__hero-badge"
-          :class="index === 0 ? 'landing__hero-badge--top' : 'landing__hero-badge--bottom'"
+          :class="heroVisualBadgePositions[index]"
         >
           <i :class="badge.icon" aria-hidden="true" />
           <div>
@@ -687,6 +695,11 @@ const steps = [
   .landing__hero-badge--bottom {
     bottom: 3rem;
     right: -2rem;
+  }
+
+  .landing__hero-badge--waist {
+    top: 90%;
+    left: -0.5rem;
   }
 
   .landing__step {

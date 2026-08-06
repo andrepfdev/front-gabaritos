@@ -44,6 +44,7 @@ function acknowledge() {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  border: 1px solid var(--gab-border);
 }
 
 .consent-toast__close {

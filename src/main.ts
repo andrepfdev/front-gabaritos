@@ -15,7 +15,6 @@ import './assets/styles/main.css'
 const app = createApp(App)
 
 app.use(createPinia())
-app.use(router)
 app.use(PrimeVue, {
   theme: {
     preset: gabaritosPreset,
@@ -32,5 +31,10 @@ authStore
   .hydrate()
   .catch(() => undefined)
   .finally(() => {
+    // Só instala o router (e dispara a navegação inicial) depois que a
+    // hidratação termina — assim o guard já enxerga o userId correto e não
+    // tenta redirecionar pra /conta/undefined enquanto o usuário ainda
+    // está sendo carregado.
+    app.use(router)
     app.mount('#app')
   })

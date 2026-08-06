@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import PlanCard from '@/components/plans/PlanCard.vue'
 import LoadingState from '@/components/common/LoadingState.vue'
@@ -14,6 +14,22 @@ const authStore = useAuthStore()
 const billingStore = useBillingStore()
 const router = useRouter()
 const toast = useToastFeedback()
+
+// O plano "mais vantajoso" é o de maior desconto informado pela própria API
+// na descrição (ex.: "— 30% de desconto vs. mensal") — nada inventado aqui.
+const recommendedPlanId = computed(() => {
+  let bestId: string | null = null
+  let bestDiscount = 0
+  for (const plan of plansStore.plans) {
+    const match = plan.description?.match(/(\d+)%\s*de desconto/i)
+    const discount = match ? Number(match[1]) : 0
+    if (discount > bestDiscount) {
+      bestDiscount = discount
+      bestId = plan.id
+    }
+  }
+  return bestId
+})
 
 const subscribingPlanId = ref<string | null>(null)
 const subscribeError = ref<string | null>(null)
@@ -59,6 +75,7 @@ async function handleSubscribe(planId: string) {
         :key="plan.id"
         :plan="plan"
         :loading="subscribingPlanId === plan.id"
+        :recommended="plan.id === recommendedPlanId"
         @subscribe="handleSubscribe"
       />
     </div>

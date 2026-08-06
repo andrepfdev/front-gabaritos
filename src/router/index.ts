@@ -68,12 +68,17 @@ router.beforeEach((to) => {
     return { name: 'login', query: { redirect: to.fullPath } }
   }
 
-  if (to.meta.guestOnly && authStore.isAuthenticated) {
-    return { name: 'account', params: { userId: authStore.userId! } }
+  if (to.meta.guestOnly && authStore.isAuthenticated && authStore.userId) {
+    return { name: 'account', params: { userId: authStore.userId } }
   }
 
-  if (to.name === 'account' && authStore.isAuthenticated && to.params.userId !== authStore.userId) {
-    return { name: 'account', params: { userId: authStore.userId! } }
+  if (
+    to.name === 'account' &&
+    authStore.isAuthenticated &&
+    authStore.userId &&
+    to.params.userId !== authStore.userId
+  ) {
+    return { name: 'account', params: { userId: authStore.userId } }
   }
 
   return true

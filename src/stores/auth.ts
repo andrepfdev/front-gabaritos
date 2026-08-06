@@ -85,7 +85,7 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = await usersService.getMe()
   }
 
-  async function updateProfile(partial: { name?: string }) {
+  async function updateProfile(partial: { name?: string; email?: string }) {
     user.value = await usersService.updateMe(partial)
   }
 

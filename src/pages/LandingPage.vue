@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import Button from 'primevue/button'
 import StoreBadges from '@/components/common/StoreBadges.vue'
@@ -6,6 +7,77 @@ import heroWoman from '@/assets/hero-woman.webp'
 import { useAuthStore } from '@/stores/auth'
 
 const authStore = useAuthStore()
+
+const testimonials = [
+  {
+    quote:
+      'O ProvaZero me devolveu meu tempo. Corrijo em minutos e foco no que realmente importa: meus alunos.',
+    name: 'Ana Paula',
+    role: 'Professora de Matemática',
+  },
+  {
+    quote:
+      'Antes eu levava um fim de semana inteiro corrigindo prova de múltipla escolha. Agora é só apontar a câmera.',
+    name: 'Carlos Eduardo',
+    role: 'Professor de História',
+  },
+  {
+    quote:
+      'O que mais uso é o detalhamento por questão — dá pra ver na hora onde a turma inteira errou junto.',
+    name: 'Fernanda Lima',
+    role: 'Coordenadora pedagógica',
+  },
+  {
+    quote: 'Uso com quatro turmas diferentes. Trocar de gabarito entre uma prova e outra é tranquilo.',
+    name: 'Roberto Alves',
+    role: 'Professor de Biologia',
+  },
+  {
+    quote: 'Simples de configurar e o resultado sai rápido o bastante pra eu comentar a prova na mesma aula.',
+    name: 'Juliana Santos',
+    role: 'Professora de Química',
+  },
+]
+
+const activeTestimonial = ref(0)
+const slideDirection = ref<'next' | 'prev'>('next')
+
+let autoplayId: ReturnType<typeof setInterval> | null = null
+
+function stopAutoplay() {
+  if (autoplayId) {
+    clearInterval(autoplayId)
+    autoplayId = null
+  }
+}
+
+function startAutoplay() {
+  stopAutoplay()
+  autoplayId = setInterval(nextTestimonial, 6000)
+}
+
+function goToTestimonial(index: number) {
+  slideDirection.value = index > activeTestimonial.value ? 'next' : 'prev'
+  activeTestimonial.value = index
+}
+
+function nextTestimonial() {
+  slideDirection.value = 'next'
+  activeTestimonial.value = (activeTestimonial.value + 1) % testimonials.length
+}
+
+function prevTestimonial() {
+  slideDirection.value = 'prev'
+  activeTestimonial.value = (activeTestimonial.value - 1 + testimonials.length) % testimonials.length
+}
+
+function handleManualNav(action: () => void) {
+  action()
+  startAutoplay()
+}
+
+onMounted(startAutoplay)
+onBeforeUnmount(stopAutoplay)
 
 const steps = [
   {
@@ -87,14 +159,50 @@ const steps = [
       </div>
     </section>
 
-    <section class="gab-container landing__testimonial">
-      <blockquote class="landing__quote">
-        <p>
-          O ProvaZero me devolveu meu tempo. Corrijo em minutos e foco no que realmente importa:
-          meus alunos.
-        </p>
-        <cite>— Professora Ana Paula</cite>
-      </blockquote>
+    <section class="gab-container landing__testimonial" @mouseenter="stopAutoplay" @mouseleave="startAutoplay">
+      <div class="landing__testimonial-row">
+        <button
+          type="button"
+          class="landing__testimonial-nav"
+          aria-label="Depoimento anterior"
+          @click="handleManualNav(prevTestimonial)"
+        >
+          <i class="pi pi-angle-left" aria-hidden="true" />
+        </button>
+
+        <div class="landing__testimonial-viewport">
+          <Transition :name="slideDirection === 'next' ? 'slide-next' : 'slide-prev'" mode="out-in">
+            <blockquote :key="activeTestimonial" class="landing__quote">
+              <p>{{ testimonials[activeTestimonial].quote }}</p>
+              <cite>
+                — {{ testimonials[activeTestimonial].name }}
+                <span class="landing__quote-role">{{ testimonials[activeTestimonial].role }}</span>
+              </cite>
+            </blockquote>
+          </Transition>
+        </div>
+
+        <button
+          type="button"
+          class="landing__testimonial-nav"
+          aria-label="Próximo depoimento"
+          @click="handleManualNav(nextTestimonial)"
+        >
+          <i class="pi pi-angle-right" aria-hidden="true" />
+        </button>
+      </div>
+
+      <div class="landing__testimonial-dots">
+        <button
+          v-for="(testimonial, index) in testimonials"
+          :key="testimonial.name"
+          type="button"
+          class="landing__testimonial-dot"
+          :class="{ 'landing__testimonial-dot--active': index === activeTestimonial }"
+          :aria-label="`Ver depoimento de ${testimonial.name}`"
+          @click="handleManualNav(() => goToTestimonial(index))"
+        />
+      </div>
     </section>
 
     <section class="gab-container landing__cta">
@@ -232,24 +340,27 @@ const steps = [
 
 .landing__testimonial {
   padding-block: 3.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .landing__quote {
   position: relative;
   max-width: 38rem;
-  margin: 0;
-  padding-left: 2rem;
+  margin: 0 auto;
 }
 
 .landing__quote::before {
   content: '\201C';
-  position: absolute;
-  left: -0.35rem;
-  top: -1.5rem;
+  display: block;
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 4.5rem;
+  line-height: 1;
   color: var(--gab-accent);
   opacity: 0.8;
+  margin-bottom: -0.5rem;
 }
 
 .landing__quote p {
@@ -264,6 +375,123 @@ const steps = [
   font-weight: 600;
   color: var(--gab-text-muted);
   font-size: 0.9rem;
+}
+
+.landing__quote-role {
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+.landing__quote-role::before {
+  content: '\00b7';
+  margin: 0 0.4rem;
+}
+
+.landing__testimonial-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.landing__testimonial-viewport {
+  flex: 1;
+  max-width: 38rem;
+  overflow: hidden;
+}
+
+.landing__testimonial-nav {
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid var(--gab-border);
+  background: var(--gab-surface);
+  color: var(--gab-text);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.landing__testimonial-nav:hover {
+  color: var(--gab-accent);
+  border-color: var(--gab-accent-soft);
+  transform: scale(1.08);
+}
+
+.landing__testimonial-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+
+.landing__testimonial-dot {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.landing__testimonial-dot::before {
+  content: '';
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: var(--gab-border);
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.landing__testimonial-dot--active::before {
+  background: var(--gab-accent);
+  transform: scale(1.3);
+}
+
+/* Slide + fade direcional: próximo desliza da direita, anterior da esquerda. */
+.slide-next-enter-active,
+.slide-next-leave-active,
+.slide-prev-enter-active,
+.slide-prev-leave-active {
+  transition:
+    transform 0.35s ease,
+    opacity 0.35s ease;
+}
+
+.slide-next-enter-from {
+  opacity: 0;
+  transform: translateX(1.5rem);
+}
+
+.slide-next-leave-to {
+  opacity: 0;
+  transform: translateX(-1.5rem);
+}
+
+.slide-prev-enter-from {
+  opacity: 0;
+  transform: translateX(-1.5rem);
+}
+
+.slide-prev-leave-to {
+  opacity: 0;
+  transform: translateX(1.5rem);
+}
+
+@media (max-width: 480px) {
+  .landing__testimonial-nav {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
 }
 
 .landing__cta {

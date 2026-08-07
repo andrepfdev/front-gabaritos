@@ -24,7 +24,7 @@ function formatPrice(price: number, currency = 'BRL') {
     <div class="founder-card__body">
       <div class="founder-card__header">
         <div class="founder-card__icon" aria-hidden="true"><i class="pi pi-graduation-cap" /></div>
-        <span class="gab-pill-badge founder-card__badge">Oferta de fundador</span>
+        <span class="gab-pill-badge founder-card__badge" style="margin-left: -0.5rem !important;">Oferta de fundador</span>
       </div>
 
       <h3 class="founder-card__name">{{ plan.name }}</h3>
@@ -101,6 +101,7 @@ function formatPrice(price: number, currency = 'BRL') {
 .founder-card__description {
   margin: 0;
   color: var(--gab-text-muted);
+  line-height: 1.5;
 }
 
 .founder-card__action {

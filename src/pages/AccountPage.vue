@@ -37,6 +37,18 @@ async function loadBilling() {
   await billingStore.fetchPayments().catch(() => undefined)
 }
 
+// Atualização manual (botão "Atualizar status") — diferente do carregamento
+// automático abaixo, essa é uma ação explícita do usuário, então uma falha
+// merece um toast (o silêncio do onMounted/retry é proposital: é só uma
+// tentativa best-effort de pegar o webhook do Stripe).
+async function handleManualRefresh() {
+  try {
+    await loadBilling()
+  } catch (e) {
+    toast.fail(e instanceof Error ? e.message : 'Não foi possível atualizar')
+  }
+}
+
 onMounted(async () => {
   await loadBilling().catch(() => undefined)
 
@@ -91,7 +103,7 @@ function confirmCancel() {
         :billing="billingStore.billing"
         :cancel-loading="cancelLoading"
         @cancel="confirmCancel"
-        @refresh="loadBilling"
+        @refresh="handleManualRefresh"
       />
 
       <PaymentHistoryList :payments="billingStore.payments" />

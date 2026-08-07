@@ -1,9 +1,15 @@
 import { ref } from 'vue'
+import { useToastFeedback } from './useToastFeedback'
 
-/** Padroniza loading/erro para uma ação disparada em componente (ex: submit de formulário). */
+/**
+ * Padroniza loading/erro para uma ação disparada em componente (ex: submit de formulário).
+ * Além de preencher `error` (pro <FormError> inline), dispara um toast de falha —
+ * reforça a mensagem pra quem não notar o texto inline.
+ */
 export function useAsyncAction<Args extends unknown[], Result>(
   action: (...args: Args) => Promise<Result>,
 ) {
+  const toast = useToastFeedback()
   const loading = ref(false)
   const error = ref<string | null>(null)
 
@@ -14,6 +20,7 @@ export function useAsyncAction<Args extends unknown[], Result>(
       return await action(...args)
     } catch (e) {
       error.value = e instanceof Error ? e.message : 'Algo deu errado'
+      toast.fail(error.value)
       return undefined
     } finally {
       loading.value = false

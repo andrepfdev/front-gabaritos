@@ -616,8 +616,15 @@ const steps = [
   text-align: center;
   gap: 0.75rem;
   padding: 2.5rem 1.5rem;
-  background: var(--gab-accent-soft);
   border-radius: var(--gab-radius-lg);
+  background-color: var(--gab-accent-soft);
+  /* Riscadinho bem fraco, só pra dar textura ao card sem competir com o
+     texto — mesmo tom do accent, só que quase transparente. */
+  background-image: repeating-linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--gab-accent) 6%, transparent) 0 1px,
+    transparent 1px 16px
+  );
 }
 
 .landing__cta h2 {

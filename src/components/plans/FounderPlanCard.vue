@@ -59,7 +59,7 @@ function formatPrice(price: number, currency = 'BRL') {
 .founder-card__body {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.35rem;
 }
 
 .founder-card__header {
@@ -97,7 +97,6 @@ function formatPrice(price: number, currency = 'BRL') {
 .founder-card__description {
   margin: 0;
   color: var(--gab-text-muted);
-  max-width: 46ch;
 }
 
 .founder-card__action {
@@ -128,9 +127,16 @@ function formatPrice(price: number, currency = 'BRL') {
     padding: 2rem 2.25rem;
   }
 
+  .founder-card__body {
+    flex: 1;
+    min-width: 0;
+    padding-right: 2rem;
+  }
+
   .founder-card__action {
     flex-direction: column;
     align-items: flex-end;
+    flex-shrink: 0;
     gap: 0.75rem;
   }
 

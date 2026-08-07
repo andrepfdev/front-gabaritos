@@ -1,26 +1,48 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import Button from 'primevue/button'
 import Tag from 'primevue/tag'
 import type { BillingSnapshot } from '@/types/domain'
+import { subscriptionStatusLabel } from '@/utils/statusLabels'
 
-defineProps<{
+const props = defineProps<{
   billing: BillingSnapshot
   cancelLoading?: boolean
 }>()
 
 const emit = defineEmits<{ cancel: []; refresh: [] }>()
+
+const planName = computed(() => {
+  const planId = props.billing.subscription?.planId
+  if (!planId) return null
+  return props.billing.plans.find((plan) => plan.id === planId)?.name ?? planId
+})
+
+const statusLabel = computed(() => {
+  const status = props.billing.subscription?.status
+  return status ? subscriptionStatusLabel(status) : null
+})
+
+const headerTag = computed(() => {
+  const subscription = props.billing.subscription
+  if (!subscription) return { value: 'Sem assinatura', severity: 'secondary' as const }
+  if (props.billing.isActive) return { value: 'Ativa', severity: 'success' as const }
+  if (subscription.status.toUpperCase() === 'PENDING') {
+    return { value: 'Pagamento pendente', severity: 'warn' as const }
+  }
+  return { value: 'Inativa', severity: 'warn' as const }
+})
 </script>
 
 <template>
   <section class="gab-card status-card">
     <div class="status-card__header">
       <h2>Sua assinatura</h2>
-      <Tag :value="billing.isActive ? 'Ativa' : 'Inativa'" :severity="billing.isActive ? 'success' : 'warn'" />
+      <Tag :value="headerTag.value" :severity="headerTag.severity" />
     </div>
 
     <p v-if="billing.subscription" class="status-card__plan">
-      Plano: <strong>{{ billing.subscription.planId }}</strong> &middot; status:
-      {{ billing.subscription.status }}
+      Plano: <strong>{{ planName }}</strong> &middot; status: {{ statusLabel }}
     </p>
     <p v-else class="status-card__empty">Você ainda não tem uma assinatura.</p>
 

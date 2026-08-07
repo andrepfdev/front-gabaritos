@@ -12,18 +12,24 @@ const authStore = useAuthStore()
 const toast = useToastFeedback()
 
 const name = ref(authStore.user?.name ?? '')
+const email = ref(authStore.user?.email ?? '')
 const currentPassword = ref('')
 const newPassword = ref('')
+const confirmNewPassword = ref('')
 
 const { loading: profileLoading, error: profileError, run: saveProfile } = useAsyncAction(async () => {
-  await authStore.updateProfile({ name: name.value })
+  await authStore.updateProfile({ name: name.value, email: email.value })
   toast.success('Dados atualizados.')
 })
 
 const { loading: passwordLoading, error: passwordError, run: savePassword } = useAsyncAction(async () => {
+  if (newPassword.value !== confirmNewPassword.value) {
+    throw new Error('As senhas não coincidem.')
+  }
   await authStore.changePassword(currentPassword.value, newPassword.value)
   currentPassword.value = ''
   newPassword.value = ''
+  confirmNewPassword.value = ''
   toast.success('Senha alterada.')
 })
 </script>
@@ -39,6 +45,10 @@ const { loading: passwordLoading, error: passwordError, run: savePassword } = us
         <label for="name">Nome</label>
         <InputText id="name" v-model="name" required />
       </div>
+      <div class="gab-field">
+        <label for="email">E-mail</label>
+        <InputText id="email" v-model="email" type="email" autocomplete="email" required />
+      </div>
       <Button type="submit" label="Salvar" :loading="profileLoading" />
     </form>
 
@@ -52,6 +62,17 @@ const { loading: passwordLoading, error: passwordError, run: savePassword } = us
       <div class="gab-field">
         <label for="new-password">Nova senha</label>
         <Password id="new-password" v-model="newPassword" toggleMask required fluid />
+      </div>
+      <div class="gab-field">
+        <label for="confirm-new-password">Confirmar nova senha</label>
+        <Password
+          id="confirm-new-password"
+          v-model="confirmNewPassword"
+          toggleMask
+          :feedback="false"
+          required
+          fluid
+        />
       </div>
       <Button type="submit" label="Trocar senha" severity="secondary" :loading="passwordLoading" />
     </form>

@@ -35,6 +35,7 @@ export interface ChangePasswordRequest {
 
 export interface UpdateProfileRequest {
   name?: string
+  email?: string
 }
 
 export interface CreateSubscriptionRequest {

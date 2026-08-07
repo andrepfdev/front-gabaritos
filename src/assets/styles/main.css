@@ -123,6 +123,14 @@ body {
   padding: 1.5rem;
 }
 
+/* Preço de parcela dentro de texto corrido (ex.: descrição de plano) — em
+   negrito e um pouco maior, pra chamar atenção sem sair do fluxo do texto. */
+.gab-price-highlight {
+  color: var(--gab-text);
+  font-weight: 700;
+  font-size: 1.05em;
+}
+
 .gab-pill-badge {
   display: inline-flex;
   align-items: center;

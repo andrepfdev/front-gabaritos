@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import Button from 'primevue/button'
 import Tag from 'primevue/tag'
 import type { Plan } from '@/types/domain'
+import { highlightInstallmentPrice } from '@/utils/highlightInstallmentPrice'
 
 const props = defineProps<{
   plan: Plan
@@ -35,6 +36,8 @@ const intervalLabel = computed(() => {
 
 const intervalIcon = computed(() => intervalIcons[props.plan.interval ?? ''] ?? 'pi pi-calendar')
 
+const descriptionHtml = computed(() => (props.plan.description ? highlightInstallmentPrice(props.plan.description) : ''))
+
 function formatPrice(price: number, currency = 'BRL') {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency }).format(price)
 }
@@ -59,7 +62,7 @@ function formatPrice(price: number, currency = 'BRL') {
       <span v-if="intervalLabel" class="plan-card__interval">/{{ intervalLabel }}</span>
     </p>
 
-    <p v-if="plan.description" class="plan-card__description">{{ plan.description }}</p>
+    <p v-if="plan.description" class="plan-card__description" v-html="descriptionHtml" />
 
     <div class="plan-card__spacer" />
 

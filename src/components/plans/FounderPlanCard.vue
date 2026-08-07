@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import Button from 'primevue/button'
 import type { Plan } from '@/types/domain'
+import { highlightInstallmentPrice } from '@/utils/highlightInstallmentPrice'
 
 const props = defineProps<{
   plan: Plan
@@ -9,6 +11,8 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{ subscribe: [planId: string] }>()
+
+const descriptionHtml = computed(() => (props.plan.description ? highlightInstallmentPrice(props.plan.description) : ''))
 
 function formatPrice(price: number, currency = 'BRL') {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency }).format(price)
@@ -24,7 +28,7 @@ function formatPrice(price: number, currency = 'BRL') {
       </div>
 
       <h3 class="founder-card__name">{{ plan.name }}</h3>
-      <p v-if="plan.description" class="founder-card__description">{{ plan.description }}</p>
+      <p v-if="plan.description" class="founder-card__description" v-html="descriptionHtml" />
     </div>
 
     <div class="founder-card__action">

@@ -93,6 +93,16 @@ const router = createRouter({
       },
     },
     {
+      path: '/fundador',
+      name: 'founder-landing',
+      component: () => import('@/pages/FounderLandingPage.vue'),
+      meta: {
+        title: 'Oferta de Fundador — ProvaZero',
+        description:
+          'Vagas limitadas: garanta 2 anos de acesso ao ProvaZero com preço especial de fundador.',
+      },
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
       component: () => import('@/pages/NotFoundPage.vue'),

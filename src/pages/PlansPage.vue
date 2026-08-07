@@ -2,6 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import PlanCard from '@/components/plans/PlanCard.vue'
+import FounderPlanCard from '@/components/plans/FounderPlanCard.vue'
 import LoadingState from '@/components/common/LoadingState.vue'
 import FormError from '@/components/common/FormError.vue'
 import { usePlansStore } from '@/stores/plans'
@@ -15,12 +16,19 @@ const billingStore = useBillingStore()
 const router = useRouter()
 const toast = useToastFeedback()
 
+// Planos recorrentes "padrão" ficam no grid de 3 colunas; qualquer plano com
+// um interval fora desse conjunto (ex.: BIENNIAL do "Professor Patrocinador")
+// é tratado como oferta especial e renderizado à parte, num card largo.
+const STANDARD_INTERVALS = ['MONTHLY', 'SEMIANNUAL', 'YEARLY']
+const standardPlans = computed(() => plansStore.plans.filter((plan) => STANDARD_INTERVALS.includes(plan.interval ?? '')))
+const specialPlans = computed(() => plansStore.plans.filter((plan) => !STANDARD_INTERVALS.includes(plan.interval ?? '')))
+
 // O plano "mais vantajoso" é o de maior desconto informado pela própria API
 // na descrição (ex.: "— 30% de desconto vs. mensal") — nada inventado aqui.
 const recommendedPlanId = computed(() => {
   let bestId: string | null = null
   let bestDiscount = 0
-  for (const plan of plansStore.plans) {
+  for (const plan of standardPlans.value) {
     const match = plan.description?.match(/(\d+)%\s*de desconto/i)
     const discount = match ? Number(match[1]) : 0
     if (discount > bestDiscount) {
@@ -108,16 +116,30 @@ async function handleSubscribe(planId: string) {
     <LoadingState v-if="plansStore.status === 'loading' && plansStore.plans.length === 0" label="Carregando planos…" />
     <FormError v-else-if="plansStore.status === 'error'" :message="plansStore.error" />
 
-    <div v-else class="gab-grid gab-grid--3 plans-page__grid">
-      <PlanCard
-        v-for="plan in plansStore.plans"
-        :key="plan.id"
-        :plan="plan"
-        :loading="subscribingPlanId === plan.id"
-        :recommended="plan.id === recommendedPlanId"
-        @subscribe="handleSubscribe"
-      />
-    </div>
+    <template v-else>
+      <div class="plans-page__content">
+        <div class="gab-grid gab-grid--3 plans-page__grid">
+          <PlanCard
+            v-for="plan in standardPlans"
+            :key="plan.id"
+            :plan="plan"
+            :loading="subscribingPlanId === plan.id"
+            :recommended="plan.id === recommendedPlanId"
+            @subscribe="handleSubscribe"
+          />
+        </div>
+
+        <div v-if="specialPlans.length > 0" class="plans-page__special">
+          <FounderPlanCard
+            v-for="plan in specialPlans"
+            :key="plan.id"
+            :plan="plan"
+            :loading="subscribingPlanId === plan.id"
+            @subscribe="handleSubscribe"
+          />
+        </div>
+      </div>
+    </template>
   </main>
 </template>
 
@@ -127,7 +149,37 @@ async function handleSubscribe(planId: string) {
   margin: 0.25rem 0 2rem;
 }
 
+.plans-page__content {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
 .plans-page__grid {
   align-items: stretch;
+}
+
+.plans-page__special {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Abaixo de 1024px (largura em que o grid ainda é 1 coluna, ver .gab-grid--3
+   em main.css) a oferta especial vem primeiro — é a "melhor tacada" e não
+   deve ficar escondida no fim do scroll no mobile. No desktop, com os 3
+   planos lado a lado, ela volta pro lugar natural: depois do grid. */
+.plans-page__special {
+  order: -1;
+}
+
+@media (min-width: 1024px) {
+  .plans-page__special {
+    order: 1;
+  }
+
+  .plans-page__grid {
+    order: 0;
+  }
 }
 </style>

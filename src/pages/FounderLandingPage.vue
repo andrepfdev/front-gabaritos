@@ -17,7 +17,10 @@ const router = useRouter()
 const toast = useToastFeedback()
 
 const YOUTUBE_ID = '5kPntJBBbmg'
-const YOUTUBE_EMBED_URL = `https://www.youtube.com/embed/${YOUTUBE_ID}?autoplay=1&mute=0&controls=0&rel=0&modestbranding=1`
+const YOUTUBE_EMBED_URL =
+  `https://www.youtube-nocookie.com/embed/${YOUTUBE_ID}` +
+  '?autoplay=1&mute=0&controls=0&rel=0&modestbranding=1' +
+  '&cc_load_policy=0&iv_load_policy=3&disablekb=1&fs=0&playsinline=1'
 
 const founderPlan = computed(() =>
   plansStore.plans.find((p) => !['MONTHLY', 'SEMIANNUAL', 'YEARLY'].includes(p.interval ?? '')),

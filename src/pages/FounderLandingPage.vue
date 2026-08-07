@@ -17,6 +17,7 @@ const router = useRouter()
 const toast = useToastFeedback()
 
 const YOUTUBE_ID = 'ZK-rNEhJIDs'
+const YOUTUBE_EMBED_URL = `https://www.youtube.com/embed/${YOUTUBE_ID}?autoplay=1&mute=0&controls=0&rel=0&modestbranding=1`
 
 const founderPlan = computed(() =>
   plansStore.plans.find((p) => !['MONTHLY', 'SEMIANNUAL', 'YEARLY'].includes(p.interval ?? '')),
@@ -95,7 +96,7 @@ const benefits = [
       <div class="founder-page__video-wrap">
         <iframe
           class="founder-page__video"
-          :src="`https://www.youtube.com/embed/${YOUTUBE_ID}`"
+          :src="YOUTUBE_EMBED_URL"
           title="ProvaZero — Corrija provas em segundos"
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

@@ -6,24 +6,26 @@ function humanizeFallback(status: string): string {
     .replace(/^./, (c) => c.toUpperCase())
 }
 
+// Valores reais do enum SubscriptionStatus do backend: PENDING, AUTHORIZED, PAUSED,
+// CANCELED, PAST_DUE, EXPIRED (ver prisma/schema.prisma em api-gabaritos).
 const SUBSCRIPTION_STATUS_LABELS: Record<string, string> = {
   PENDING: 'Pagamento pendente',
-  ACTIVE: 'Ativa',
+  AUTHORIZED: 'Ativa',
+  PAUSED: 'Pausada',
   CANCELED: 'Cancelada',
-  CANCELLED: 'Cancelada',
-  EXPIRED: 'Expirada',
-  TRIALING: 'Em teste',
   PAST_DUE: 'Pagamento atrasado',
+  EXPIRED: 'Expirada',
 }
 
+// Valores reais do enum PaymentStatus do backend: PENDING, APPROVED, IN_PROCESS,
+// REJECTED, REFUNDED, CANCELLED.
 const PAYMENT_STATUS_LABELS: Record<string, string> = {
   PENDING: 'Pendente',
-  PAID: 'Pago',
-  SUCCEEDED: 'Pago',
-  FAILED: 'Falhou',
-  CANCELED: 'Cancelado',
-  CANCELLED: 'Cancelado',
+  APPROVED: 'Aprovado',
+  IN_PROCESS: 'Em processamento',
+  REJECTED: 'Rejeitado',
   REFUNDED: 'Reembolsado',
+  CANCELLED: 'Cancelado',
 }
 
 export function subscriptionStatusLabel(status: string): string {

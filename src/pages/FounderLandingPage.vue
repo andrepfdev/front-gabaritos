@@ -16,7 +16,7 @@ const billingStore = useBillingStore()
 const router = useRouter()
 const toast = useToastFeedback()
 
-const YOUTUBE_ID = '5kPntJBBbmg'
+const YOUTUBE_ID = 'YMaGiCi9YR0'
 const YOUTUBE_EMBED_URL =
   `https://www.youtube-nocookie.com/embed/${YOUTUBE_ID}` +
   '?autoplay=1&mute=0&controls=0&rel=0&modestbranding=1' +

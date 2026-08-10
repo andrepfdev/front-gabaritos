@@ -144,14 +144,23 @@ const steps = [
           O jeito mais simples de corrigir gabarito pelo celular: aponte a câmera pro
           cartão-resposta e receba a correção automática da prova na hora.
         </p>
-        <RouterLink :to="authStore.isAuthenticated ? `/conta/${authStore.userId}` : '/registro'">
-          <Button
-            :label="authStore.isAuthenticated ? 'Ir para minha conta' : 'Criar conta grátis'"
-            icon="pi pi-arrow-right"
-            iconPos="right"
-            size="large"
-          />
-        </RouterLink>
+        <div class="landing__hero-actions">
+          <RouterLink :to="authStore.isAuthenticated ? `/conta/${authStore.userId}` : '/registro'">
+            <Button
+              :label="authStore.isAuthenticated ? 'Ir para minha conta' : 'Criar conta grátis'"
+              icon="pi pi-arrow-right"
+              iconPos="right"
+              size="large"
+            />
+          </RouterLink>
+          <a href="#como-funciona">
+            <Button
+              label="Veja como funciona"
+              severity="secondary"
+              size="large"
+            />
+          </a>
+        </div>
         <p v-if="!authStore.isAuthenticated" class="landing__hint">
           Sem pedir CPF &middot; leva menos de um minuto
         </p>
@@ -188,7 +197,7 @@ const steps = [
       </div>
     </section>
 
-    <section class="landing__band">
+    <section id="como-funciona" class="landing__band">
       <div class="gab-container landing__section">
         <h2>Como funciona</h2>
         <ol class="landing__steps">
@@ -308,6 +317,13 @@ const steps = [
 
 .landing__hero-badges {
   margin-top: 0.25rem;
+}
+
+.landing__hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
 }
 
 /* Micro-visual do hero: só entra no desktop, pra não empurrar o CTA
@@ -650,6 +666,10 @@ const steps = [
     padding-bottom: 0.5rem;
     align-items: flex-start;
     text-align: left;
+  }
+
+  .landing__hero-actions {
+    justify-content: flex-start;
   }
 
   .landing__hero-dots--mobile {

@@ -23,7 +23,7 @@ const STANDARD_INTERVALS = ['MONTHLY', 'SEMIANNUAL', 'YEARLY']
 const standardPlans = computed(() => plansStore.plans.filter((plan) => STANDARD_INTERVALS.includes(plan.interval ?? '')))
 const specialPlans = computed(() => plansStore.plans.filter((plan) => !STANDARD_INTERVALS.includes(plan.interval ?? '')))
 
-// O plano "mais vantajoso" é o de maior desconto informado pela própria API
+// O plano "mais escolhido" é o de maior desconto informado pela própria API
 // na descrição (ex.: "— 30% de desconto vs. mensal") — nada inventado aqui.
 const recommendedPlanId = computed(() => {
   let bestId: string | null = null
@@ -123,6 +123,7 @@ async function handleSubscribe(planId: string) {
             v-for="plan in standardPlans"
             :key="plan.id"
             :plan="plan"
+            :class="{ 'plans-page__hide-on-mobile': plan.interval === 'SEMIANNUAL' }"
             :loading="subscribingPlanId === plan.id"
             :recommended="plan.id === recommendedPlanId"
             @subscribe="handleSubscribe"
@@ -157,6 +158,16 @@ async function handleSubscribe(planId: string) {
 
 .plans-page__grid {
   align-items: stretch;
+}
+
+.plans-page__hide-on-mobile {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .plans-page__hide-on-mobile {
+    display: flex;
+  }
 }
 
 .plans-page__special {

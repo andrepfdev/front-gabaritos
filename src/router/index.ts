@@ -62,6 +62,16 @@ const router = createRouter({
       },
     },
     {
+      path: '/como-funciona',
+      name: 'how-it-works',
+      component: () => import('@/pages/HowItWorksPage.vue'),
+      meta: {
+        title: 'Como Funciona — ProvaZero',
+        description:
+          'Veja como o ProvaZero funciona: aponte a câmera pro cartão-resposta e receba a correção automática na hora.',
+      },
+    },
+    {
       path: '/conta/:userId',
       name: 'account',
       component: () => import('@/pages/AccountPage.vue'),

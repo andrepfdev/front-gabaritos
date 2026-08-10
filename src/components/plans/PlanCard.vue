@@ -38,6 +38,27 @@ const intervalIcon = computed(() => intervalIcons[props.plan.interval ?? ''] ?? 
 
 const descriptionHtml = computed(() => (props.plan.description ? highlightInstallmentPrice(props.plan.description) : ''))
 
+const planFeatures = computed(() => {
+  const interval = props.plan.interval
+  if (interval === 'MONTHLY') {
+    return [
+      { text: '100 correções por mês', bold: false },
+      { text: 'Até 10 criações de provas por mês', bold: false },
+    ]
+  }
+  const durationMap: Record<string, string> = {
+    SEMIANNUAL: '6 meses',
+    YEARLY: '1 ano',
+    BIENNIAL: '2 anos',
+  }
+  const duration = durationMap[interval ?? ''] ?? 'todo o período'
+  return [
+    { text: 'Gerações de provas ilimitadas', bold: false },
+    { text: 'Correções ilimitadas', bold: true },
+    { text: `Acesso por ${duration}`, bold: false },
+  ]
+})
+
 function formatPrice(price: number, currency = 'BRL') {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency }).format(price)
 }
@@ -63,6 +84,14 @@ function formatPrice(price: number, currency = 'BRL') {
     </p>
 
     <p v-if="plan.description" class="plan-card__description" v-html="descriptionHtml" />
+
+    <ul class="plan-card__features">
+      <li v-for="(feature, idx) in planFeatures" :key="idx" class="plan-card__feature">
+        <i class="pi pi-check" aria-hidden="true" />
+        <span v-if="feature.bold"><strong>{{ feature.text }}</strong></span>
+        <span v-else>{{ feature.text }}</span>
+      </li>
+    </ul>
 
     <div class="plan-card__spacer" />
 
@@ -152,6 +181,29 @@ function formatPrice(price: number, currency = 'BRL') {
   margin: 0;
   font-size: 0.88rem;
   line-height: 1.45;
+}
+
+.plan-card__features {
+  list-style: none;
+  padding: 0;
+  margin: 0.25rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.plan-card__feature {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--gab-text);
+}
+
+.plan-card__feature i {
+  color: var(--gab-accent);
+  font-size: 0.75rem;
+  flex-shrink: 0;
 }
 
 .plan-card__spacer {

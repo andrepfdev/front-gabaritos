@@ -23,7 +23,7 @@ const STANDARD_INTERVALS = ['MONTHLY', 'SEMIANNUAL', 'YEARLY']
 const standardPlans = computed(() => plansStore.plans.filter((plan) => STANDARD_INTERVALS.includes(plan.interval ?? '')))
 const specialPlans = computed(() => plansStore.plans.filter((plan) => !STANDARD_INTERVALS.includes(plan.interval ?? '')))
 
-// O plano "mais vantajoso" é o de maior desconto informado pela própria API
+// O plano "mais escolhido" é o de maior desconto informado pela própria API
 // na descrição (ex.: "— 30% de desconto vs. mensal") — nada inventado aqui.
 const recommendedPlanId = computed(() => {
   let bestId: string | null = null

@@ -49,7 +49,7 @@ function formatPrice(price: number, currency = 'BRL') {
       <Tag v-if="isCurrent" value="Seu plano atual" severity="success" />
       <span v-else-if="recommended" class="gab-pill-badge plan-card__recommended-badge">
         <i class="pi pi-star-fill" aria-hidden="true" />
-        Mais vantajoso
+        Mais escolhido
       </span>
     </div>
 

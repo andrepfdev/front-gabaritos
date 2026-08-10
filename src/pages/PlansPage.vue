@@ -123,6 +123,7 @@ async function handleSubscribe(planId: string) {
             v-for="plan in standardPlans"
             :key="plan.id"
             :plan="plan"
+            :class="{ 'plans-page__hide-on-mobile': plan.interval === 'SEMIANNUAL' }"
             :loading="subscribingPlanId === plan.id"
             :recommended="plan.id === recommendedPlanId"
             @subscribe="handleSubscribe"
@@ -157,6 +158,16 @@ async function handleSubscribe(planId: string) {
 
 .plans-page__grid {
   align-items: stretch;
+}
+
+.plans-page__hide-on-mobile {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .plans-page__hide-on-mobile {
+    display: flex;
+  }
 }
 
 .plans-page__special {

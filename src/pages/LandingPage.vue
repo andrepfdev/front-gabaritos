@@ -153,13 +153,13 @@ const steps = [
               size="large"
             />
           </RouterLink>
-          <a href="#como-funciona">
+          <RouterLink to="/como-funciona">
             <Button
               label="Veja como funciona"
               severity="secondary"
               size="large"
             />
-          </a>
+          </RouterLink>
         </div>
         <p v-if="!authStore.isAuthenticated" class="landing__hint">
           Sem pedir CPF &middot; leva menos de um minuto
@@ -197,7 +197,7 @@ const steps = [
       </div>
     </section>
 
-    <section id="como-funciona" class="landing__band">
+    <section class="landing__band">
       <div class="gab-container landing__section">
         <h2>Como funciona</h2>
         <ol class="landing__steps">

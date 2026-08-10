@@ -21,8 +21,8 @@ const toast = useToastFeedback()
 const YOUTUBE_ID = 'pwJcII34w5o'
 const YOUTUBE_EMBED_URL =
   `https://www.youtube-nocookie.com/embed/${YOUTUBE_ID}` +
-  '?autoplay=0&mute=0&controls=1&rel=0&modestbranding=1' +
-  '&cc_load_policy=0&iv_load_policy=3&playsinline=1'
+  '?autoplay=1&mute=0&controls=0&rel=0&modestbranding=1' +
+  '&cc_load_policy=0&iv_load_policy=3&disablekb=1&fs=0&playsinline=1'
 
 const steps = [
   {

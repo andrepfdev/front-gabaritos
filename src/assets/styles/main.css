@@ -92,9 +92,23 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * {
+  /* Zerar a duração é o comportamento certo aqui: nenhuma transição do site
+     carrega informação essencial só na animação (ex.: o slide do carrossel
+     de depoimentos é reforçado pelos dots, não depende do movimento) — o
+     estado final continua sendo comunicado instantaneamente. O que faltava
+     era animation-iteration-count (pra cortar loops, se algum surgir) e
+     scroll-behavior (rolagem "smooth" é gatilho comum de desconforto
+     vestibular e não era coberto pela regra anterior). */
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  html {
+    scroll-behavior: auto !important;
   }
 }
 

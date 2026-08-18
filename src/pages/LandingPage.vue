@@ -40,10 +40,6 @@ const testimonials = [
 
 const activeTestimonial = ref(0)
 const slideDirection = ref<'next' | 'prev'>('next')
-// Pausa explícita do usuário (botão) — diferente da pausa temporária de
-// hover/focus: uma vez pausado aqui, sair do hover/foco não deve retomar
-// o autoplay sozinho (WCAG 2.2.2, Pause/Stop/Hide).
-const isPaused = ref(false)
 
 let autoplayId: ReturnType<typeof setInterval> | null = null
 
@@ -57,19 +53,6 @@ function stopAutoplay() {
 function startAutoplay() {
   stopAutoplay()
   autoplayId = setInterval(nextTestimonial, 6000)
-}
-
-function resumeAutoplayIfNotPaused() {
-  if (!isPaused.value) startAutoplay()
-}
-
-function togglePause() {
-  isPaused.value = !isPaused.value
-  if (isPaused.value) {
-    stopAutoplay()
-  } else {
-    startAutoplay()
-  }
 }
 
 function goToTestimonial(index: number) {
@@ -89,7 +72,7 @@ function prevTestimonial() {
 
 function handleManualNav(action: () => void) {
   action()
-  resumeAutoplayIfNotPaused()
+  startAutoplay()
 }
 
 onMounted(startAutoplay)
@@ -236,9 +219,9 @@ const steps = [
     <section
       class="gab-container landing__testimonial"
       @mouseenter="stopAutoplay"
-      @mouseleave="resumeAutoplayIfNotPaused"
+      @mouseleave="startAutoplay"
       @focusin="stopAutoplay"
-      @focusout="resumeAutoplayIfNotPaused"
+      @focusout="startAutoplay"
     >
       <div class="landing__testimonial-row">
         <button
@@ -272,27 +255,16 @@ const steps = [
         </button>
       </div>
 
-      <div class="landing__testimonial-controls">
-        <div class="landing__testimonial-dots">
-          <button
-            v-for="(testimonial, index) in testimonials"
-            :key="testimonial.name"
-            type="button"
-            class="landing__testimonial-dot"
-            :class="{ 'landing__testimonial-dot--active': index === activeTestimonial }"
-            :aria-label="`Ver depoimento de ${testimonial.name}`"
-            @click="handleManualNav(() => goToTestimonial(index))"
-          />
-        </div>
+      <div class="landing__testimonial-dots">
         <button
+          v-for="(testimonial, index) in testimonials"
+          :key="testimonial.name"
           type="button"
-          class="landing__testimonial-pause"
-          :aria-label="isPaused ? 'Retomar troca automática de depoimentos' : 'Pausar troca automática de depoimentos'"
-          :aria-pressed="isPaused"
-          @click="togglePause"
-        >
-          <i :class="isPaused ? 'pi pi-play' : 'pi pi-pause'" aria-hidden="true" />
-        </button>
+          class="landing__testimonial-dot"
+          :class="{ 'landing__testimonial-dot--active': index === activeTestimonial }"
+          :aria-label="`Ver depoimento de ${testimonial.name}`"
+          @click="handleManualNav(() => goToTestimonial(index))"
+        />
       </div>
     </section>
 
@@ -640,18 +612,11 @@ const steps = [
   transform: scale(1.08);
 }
 
-.landing__testimonial-controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  margin-top: 1.25rem;
-}
-
 .landing__testimonial-dots {
   display: flex;
   justify-content: center;
   gap: 0.5rem;
+  margin-top: 1.25rem;
 }
 
 .landing__testimonial-dot {
@@ -666,26 +631,6 @@ const steps = [
   padding: 0;
   background: transparent;
   cursor: pointer;
-}
-
-.landing__testimonial-pause {
-  flex-shrink: 0;
-  width: 2.75rem;
-  height: 2.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  border: 1px solid var(--gab-border);
-  background: var(--gab-surface);
-  color: var(--gab-text);
-  cursor: pointer;
-  transition: color 0.15s ease, border-color 0.15s ease;
-}
-
-.landing__testimonial-pause:hover {
-  color: var(--gab-accent);
-  border-color: var(--gab-accent-soft);
 }
 
 .landing__testimonial-dot::before {

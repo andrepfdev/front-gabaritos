@@ -2,7 +2,6 @@
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import Button from 'primevue/button'
-import StoreBadges from '@/components/common/StoreBadges.vue'
 import heroWoman from '@/assets/hero-woman.webp'
 import { useAuthStore } from '@/stores/auth'
 
@@ -41,6 +40,10 @@ const testimonials = [
 
 const activeTestimonial = ref(0)
 const slideDirection = ref<'next' | 'prev'>('next')
+// Pausa explícita do usuário (botão) — diferente da pausa temporária de
+// hover/focus: uma vez pausado aqui, sair do hover/foco não deve retomar
+// o autoplay sozinho (WCAG 2.2.2, Pause/Stop/Hide).
+const isPaused = ref(false)
 
 let autoplayId: ReturnType<typeof setInterval> | null = null
 
@@ -54,6 +57,19 @@ function stopAutoplay() {
 function startAutoplay() {
   stopAutoplay()
   autoplayId = setInterval(nextTestimonial, 6000)
+}
+
+function resumeAutoplayIfNotPaused() {
+  if (!isPaused.value) startAutoplay()
+}
+
+function togglePause() {
+  isPaused.value = !isPaused.value
+  if (isPaused.value) {
+    stopAutoplay()
+  } else {
+    startAutoplay()
+  }
 }
 
 function goToTestimonial(index: number) {
@@ -73,7 +89,7 @@ function prevTestimonial() {
 
 function handleManualNav(action: () => void) {
   action()
-  startAutoplay()
+  resumeAutoplayIfNotPaused()
 }
 
 onMounted(startAutoplay)
@@ -153,18 +169,23 @@ const steps = [
               size="large"
             />
           </RouterLink>
-          <RouterLink to="/como-funciona">
-            <Button
-              label="Veja como funciona"
-              severity="secondary"
-              size="large"
-            />
-          </RouterLink>
         </div>
-        <p v-if="!authStore.isAuthenticated" class="landing__hint">
-          Sem pedir CPF &middot; leva menos de um minuto
+        <!-- Fecha a lacuna conceitual entre "criar conta" (web) e "usar o
+             produto" (app nativo): quem converte direto no hero, sem rolar
+             até "Como funciona", ainda precisa saber que a correção
+             acontece no app pro celular, não aqui no site. -->
+        <p class="landing__hero-note">
+          <i class="pi pi-mobile" aria-hidden="true" />
+          A correção acontece no app ProvaZero, pra Android e iPhone
         </p>
-        <StoreBadges class="landing__hero-badges" />
+        <!-- Rebaixado a link de texto: o CTA acima ("Criar conta grátis") é a
+             única decisão que importa nesta dobra; "como funciona" é uma rota
+             de saída pra quem ainda não decidiu, não uma segunda opção de
+             mesmo peso. -->
+        <RouterLink to="/como-funciona" class="landing__hero-secondary-link">
+          Veja como funciona
+          <i class="pi pi-arrow-right" aria-hidden="true" />
+        </RouterLink>
 
         <!-- Só no mobile: os mesmos balões de uso, em fluxo normal (sem foto
              pesada) — no desktop eles reaparecem sobrepostos na imagem, mais
@@ -212,7 +233,13 @@ const steps = [
       </div>
     </section>
 
-    <section class="gab-container landing__testimonial" @mouseenter="stopAutoplay" @mouseleave="startAutoplay">
+    <section
+      class="gab-container landing__testimonial"
+      @mouseenter="stopAutoplay"
+      @mouseleave="resumeAutoplayIfNotPaused"
+      @focusin="stopAutoplay"
+      @focusout="resumeAutoplayIfNotPaused"
+    >
       <div class="landing__testimonial-row">
         <button
           type="button"
@@ -223,7 +250,7 @@ const steps = [
           <i class="pi pi-angle-left" aria-hidden="true" />
         </button>
 
-        <div class="landing__testimonial-viewport">
+        <div class="landing__testimonial-viewport" aria-live="polite">
           <Transition :name="slideDirection === 'next' ? 'slide-next' : 'slide-prev'" mode="out-in">
             <blockquote :key="activeTestimonial" class="landing__quote">
               <p>{{ testimonials[activeTestimonial].quote }}</p>
@@ -245,16 +272,27 @@ const steps = [
         </button>
       </div>
 
-      <div class="landing__testimonial-dots">
+      <div class="landing__testimonial-controls">
+        <div class="landing__testimonial-dots">
+          <button
+            v-for="(testimonial, index) in testimonials"
+            :key="testimonial.name"
+            type="button"
+            class="landing__testimonial-dot"
+            :class="{ 'landing__testimonial-dot--active': index === activeTestimonial }"
+            :aria-label="`Ver depoimento de ${testimonial.name}`"
+            @click="handleManualNav(() => goToTestimonial(index))"
+          />
+        </div>
         <button
-          v-for="(testimonial, index) in testimonials"
-          :key="testimonial.name"
           type="button"
-          class="landing__testimonial-dot"
-          :class="{ 'landing__testimonial-dot--active': index === activeTestimonial }"
-          :aria-label="`Ver depoimento de ${testimonial.name}`"
-          @click="handleManualNav(() => goToTestimonial(index))"
-        />
+          class="landing__testimonial-pause"
+          :aria-label="isPaused ? 'Retomar troca automática de depoimentos' : 'Pausar troca automática de depoimentos'"
+          :aria-pressed="isPaused"
+          @click="togglePause"
+        >
+          <i :class="isPaused ? 'pi pi-play' : 'pi pi-pause'" aria-hidden="true" />
+        </button>
       </div>
     </section>
 
@@ -265,12 +303,25 @@ const steps = [
         <RouterLink to="/planos">
           <Button label="Ver planos" icon="pi pi-arrow-right" iconPos="right" size="large" />
         </RouterLink>
+        <p class="landing__cta-hint">Cancele quando quiser, direto na sua conta.</p>
       </div>
     </section>
   </main>
 </template>
 
 <style scoped>
+.landing {
+  /* Motivo do cartão-resposta: bolhas vazias em grade, com uma bolha
+     preenchida a cada 3 células — não é um dot-grid genérico, é a metáfora
+     visual do produto (gabarito com algumas respostas marcadas). Máscara
+     monocromática em duas camadas (anéis + preenchidos) pra herdar a cor do
+     tema via background-color, em vez de assets fixos por tema. */
+  --gab-answer-mask:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Ccircle cx='8' cy='8' r='2.5' fill='none' stroke='black' stroke-width='1.4'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Ccircle cx='8' cy='8' r='2.5' fill='black'/%3E%3C/svg%3E");
+  --gab-answer-mask-size: 16px 16px, 48px 48px;
+}
+
 .landing__hero {
   display: flex;
   flex-direction: column;
@@ -309,14 +360,18 @@ const steps = [
   margin: 0;
 }
 
-.landing__hint {
+.landing__hero-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   color: var(--gab-text-muted);
   font-size: 0.85rem;
   margin: 0;
 }
 
-.landing__hero-badges {
-  margin-top: 0.25rem;
+.landing__hero-note i {
+  color: var(--gab-accent);
+  font-size: 0.9rem;
 }
 
 .landing__hero-actions {
@@ -326,14 +381,42 @@ const steps = [
   justify-content: center;
 }
 
+.landing__hero-secondary-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--gab-text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Área de toque estendida (invisível) pra alcançar 44px de alvo mínimo
+   (WCAG 2.5.5) sem engordar visualmente um link que precisa ficar leve. */
+.landing__hero-secondary-link::before {
+  content: '';
+  position: absolute;
+  inset: -0.65rem -0.5rem;
+}
+
+.landing__hero-secondary-link:hover {
+  color: var(--gab-accent);
+}
+
+.landing__hero-secondary-link i {
+  font-size: 0.75rem;
+}
+
 /* Micro-visual do hero: só entra no desktop, pra não empurrar o CTA
    pra fora da dobra no mobile (diretriz mobile-first do produto). */
 .landing__hero-visual {
   display: none;
 }
 
-/* Padrão de bolinhas (motivo do cartão-resposta), bem sutil, centralizado
-   atrás do título no mobile — leve, é só CSS, sem peso de imagem. */
+/* Motivo do cartão-resposta, bem sutil, centralizado atrás do título no
+   mobile — leve, é só CSS/máscara, sem peso de imagem (ver --gab-answer-mask
+   acima). */
 .landing__hero-dots--mobile {
   position: absolute;
   top: -0.5rem;
@@ -341,8 +424,13 @@ const steps = [
   transform: translateX(-50%);
   width: 9rem;
   height: 4rem;
-  background-image: radial-gradient(var(--gab-accent-soft) 2px, transparent 2px);
-  background-size: 16px 16px;
+  background-color: var(--gab-accent-soft);
+  -webkit-mask-image: var(--gab-answer-mask);
+  mask-image: var(--gab-answer-mask);
+  -webkit-mask-size: var(--gab-answer-mask-size);
+  mask-size: var(--gab-answer-mask-size);
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
   opacity: 0.6;
   z-index: -1;
 }
@@ -505,8 +593,10 @@ const steps = [
 }
 
 .landing__quote-role {
+  /* Sem opacity aqui: --gab-text-muted já é o tom certo (~5.3:1 sobre o
+     fundo); esmaecer de novo por cima derrubava o contraste do texto do
+     depoimento pra abaixo de 4.5:1. */
   font-weight: 400;
-  opacity: 0.8;
 }
 
 .landing__quote-role::before {
@@ -529,9 +619,10 @@ const steps = [
 }
 
 .landing__testimonial-nav {
+  /* 2.75rem = 44px: alvo de toque mínimo (WCAG 2.5.5). */
   flex-shrink: 0;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.75rem;
+  height: 2.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -549,16 +640,25 @@ const steps = [
   transform: scale(1.08);
 }
 
+.landing__testimonial-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
 .landing__testimonial-dots {
   display: flex;
   justify-content: center;
   gap: 0.5rem;
-  margin-top: 1.25rem;
 }
 
 .landing__testimonial-dot {
-  width: 2rem;
-  height: 2rem;
+  /* 2.75rem = 44px: alvo de toque mínimo (WCAG 2.5.5), o indicador visual
+     continua pequeno via ::before abaixo — só a área clicável cresceu. */
+  width: 2.75rem;
+  height: 2.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -566,6 +666,26 @@ const steps = [
   padding: 0;
   background: transparent;
   cursor: pointer;
+}
+
+.landing__testimonial-pause {
+  flex-shrink: 0;
+  width: 2.75rem;
+  height: 2.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid var(--gab-border);
+  background: var(--gab-surface);
+  color: var(--gab-text);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.landing__testimonial-pause:hover {
+  color: var(--gab-accent);
+  border-color: var(--gab-accent-soft);
 }
 
 .landing__testimonial-dot::before {
@@ -614,13 +734,6 @@ const steps = [
   transform: translateX(1.5rem);
 }
 
-@media (max-width: 480px) {
-  .landing__testimonial-nav {
-    width: 2.25rem;
-    height: 2.25rem;
-  }
-}
-
 .landing__cta-wrap {
   padding-block: 3rem 4.5rem;
 }
@@ -650,6 +763,10 @@ const steps = [
 .landing__cta p {
   color: var(--gab-text-muted);
   margin: 0;
+}
+
+.landing__cta-hint {
+  font-size: 0.85rem;
 }
 
 @media (min-width: 1024px) {
@@ -694,8 +811,13 @@ const steps = [
     inset: -1.5rem -2rem auto auto;
     width: 8rem;
     height: 8rem;
-    background-image: radial-gradient(var(--gab-accent-soft) 2px, transparent 2px);
-    background-size: 14px 14px;
+    background-color: var(--gab-accent-soft);
+    -webkit-mask-image: var(--gab-answer-mask);
+    mask-image: var(--gab-answer-mask);
+    -webkit-mask-size: var(--gab-answer-mask-size);
+    mask-size: var(--gab-answer-mask-size);
+    -webkit-mask-repeat: repeat;
+    mask-repeat: repeat;
     z-index: 0;
   }
 
@@ -703,6 +825,9 @@ const steps = [
     position: relative;
     z-index: 1;
     width: 100%;
+    /* Dimensão real do arquivo (640×735) — reserva o espaço antes da
+       imagem carregar, evitando layout shift (CLS). */
+    aspect-ratio: 640 / 735;
     object-fit: contain;
     /* A foto é cortada na cintura na imagem original; um degradê suave no
        rodapé dissolve essa borda reta em vez de deixar um corte abrupto. */

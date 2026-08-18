@@ -175,18 +175,13 @@ async function handleSubscribe(planId: string) {
     </section>
 
     <!-- Founder offer -->
+    <!-- Sem cabeçalho estático aqui de propósito: o FounderPlanCard já traz
+         selo, nome, descrição e preço direto da API — duplicar esse texto
+         num wrapper "card" por fora criava dois cards aninhados mostrando a
+         mesma oferta duas vezes (e um preço fixo no JSX que podia ficar
+         desatualizado em relação ao plano real). -->
     <section class="how-it-works__founder gab-container">
       <div class="how-it-works__founder-card">
-        <span class="gab-pill-badge how-it-works__founder-badge">
-          <i class="pi pi-graduation-cap" aria-hidden="true" />
-          Oferta de lançamento
-        </span>
-        <h2>Professor Fundador</h2>
-        <p class="how-it-works__founder-desc">
-          Acesso por <strong>2 anos</strong> por apenas <strong>R$ 99,27</strong> — o equivalente a
-          <strong>R$ 4,13/mês</strong>.
-        </p>
-
         <FormError :message="subscribeError" />
 
         <LoadingState v-if="plansStore.status === 'loading' && !founderPlan" label="Carregando plano…" />
@@ -419,37 +414,15 @@ async function handleSubscribe(planId: string) {
   justify-content: center;
 }
 
+/* Wrapper puramente estrutural agora: o card visual (fundo, textura,
+   padding, radius) vem só do FounderPlanCard — evita o padrão de "card
+   dentro de card" mostrando a mesma oferta duas vezes. */
 .how-it-works__founder-card {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
   gap: 1rem;
   max-width: 42rem;
   width: 100%;
-  padding: 2.5rem 1.5rem;
-  border-radius: var(--gab-radius-lg);
-  background-color: var(--gab-accent-soft);
-  background-image: repeating-linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--gab-accent) 6%, transparent) 0 1px,
-    transparent 1px 16px
-  );
-}
-
-.how-it-works__founder-badge {
-  font-size: 0.78rem;
-  padding: 0.3rem 0.7rem;
-}
-
-.how-it-works__founder-card h2 {
-  margin: 0;
-}
-
-.how-it-works__founder-desc {
-  color: var(--gab-text-muted);
-  margin: 0;
-  line-height: 1.6;
 }
 
 .how-it-works__founder-card > :deep(.founder-card) {
